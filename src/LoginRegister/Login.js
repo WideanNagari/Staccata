@@ -10,7 +10,9 @@ const Login = () => {
             </div>
             <div className="h-full w-full absolute flex items-center justify-center">
                 <div className="bg-primary h-9/10 w-3/5 shadow-custom-1 rounded-2xl flex overflow-hidden">
-                    <div className="h-full w-1/2"></div>
+                    <div className="h-full w-1/2 flex items-center">
+                        <img src="/Logo/logo.png" alt="" />
+                    </div>
                     <div className="bg-primary-900 h-full w-1/2 py-24 px-10">
                         <h1 className="font-bold text-5xl text-center mb-14">Log in</h1>
                         <form action="">
@@ -21,7 +23,7 @@ const Login = () => {
                             <input type="checkbox" name="rememberme" id="remember" className="w-4 h-4 mb-5"/>
                             <label htmlFor="remember" className="ml-2">Remember Me!</label>
 
-                            <Button text="Login"/>
+                            <Button text="Login" addedClass="mt-1 mb-5"/>
                             
                             <div className="flex gap-1">
                                 <p>Not Registered Yet?</p>

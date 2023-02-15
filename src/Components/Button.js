@@ -1,10 +1,10 @@
 const Button = (props) => {
     const text = props.text;
+    const addedClass = props.addedClass
 
     return (
         <div>
-            <button className="mt-1 h-12 w-full rounded-lg bg-primary-100 text-white text-lg mb-5
-                                hover:bg-primary-200">
+            <button className={`h-12 w-full rounded-lg bg-primary-100 text-white text-lg hover:bg-primary-200 ${addedClass}`}>
                 { text }
             </button>
         </div>

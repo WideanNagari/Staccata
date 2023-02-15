@@ -1,7 +1,7 @@
 const UserDashboard = () => {
     return ( 
-        <div>user's dashboard</div>
-     );
+        <div></div>
+    );
 }
  
 export default UserDashboard;
