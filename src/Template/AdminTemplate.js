@@ -17,6 +17,7 @@ const AdminTemplate = () => {
     const menuOnClick = (name) => {
         setActive(name);
     }
+    
     return (
         <Router>
             <div className="user-main flex h-full">
