@@ -7,9 +7,13 @@ class User(db.Model):
     username = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    level = db.Column(db.Integer, nullable=False)
+    file_converted_piano = db.Column(db.Integer, nullable=False, default=0)
+    file_converted_guitar = db.Column(db.Integer, nullable=False, default=0)
+    report_sent = db.Column(db.Integer, nullable=False, default=0)
+    level = db.Column(db.Integer, nullable=False, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
         return '<Users {}>'.format(self.username)

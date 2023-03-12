@@ -6,58 +6,52 @@ from flask import request
 from flask_jwt_extended import *
 from datetime import datetime, timedelta
 
-def formatData(data):
+def formatDataUser(data):
     data = {
         'id': data.id,
         'username': data.username,
         'email': data.email,
         'password': data.password,
+        'file_converted_piano': data.file_converted_piano,
+        'file_converted_guitar': data.file_converted_guitar,
+        'report_sent': data.report_sent,
         'level': data.level,
         'created_at': data.created_at,
         'updated_at': data.updated_at,
-    }
-    return data
-
-def formatJWT(data):
-    data = {
-        'id': data.id,
-        'username': data.username,
-        'email': data.email,
-        'password': data.password,
-        'level': data.level
+        'deleted_at': data.deleted_at,
     }
     return data
 
 def formatArray(data):
     arr = []
     for i in data:
-        arr.append(formatData(i))
+        arr.append(formatDataUser(i))
     return arr
 
 @app.route('/users', methods=['GET'])
-def getAll():
+def getAllUser():
     try:
-        user = User.query.all()
+        user = User.query.filter(User.deleted_at==None)
         data = formatArray(user)
         return response.success(data, "success")
     except Exception as e:
-        return response.badRequest({}, e)
+        return response.badRequest({}, str(e))
 
 @app.route('/users/<id>', methods=['GET'])
-def getOne(id):
+def getOneUser(id):
     try: 
-        user = User.query.filter_by(id=id).first()
+        user = User.query.filter_by(id=id).filter(User.deleted_at==None).first()
 
         if not user:
             return response.badRequest({}, "tidak ada data user")
         
-        return response.success(formatData(user), "success")
+        return response.success(formatDataUser(user), "success")
 
     except Exception as e:
-        return response.badRequest({}, e)
+        return response.badRequest({}, str(e))
     
 @app.route('/users', methods=['POST'])
-def create():
+def createUser():
     try:
         username = request.form.get("username")
         email = request.form.get("email")
@@ -69,19 +63,19 @@ def create():
         db.session.add(user)
         db.session.commit()
 
-        return response.success(formatData(user), "Sukses menambah data user")
+        return response.success(formatDataUser(user), "Sukses menambah data user")
     
     except Exception as e:
-        return response.badRequest({}, e)
+        return response.badRequest({}, str(e))
     
 @app.route('/users/<id>', methods=['PUT'])
-def update(id):
+def updateUser(id):
     try:
         username = request.form.get("username")
         email = request.form.get("email")
         password = request.form.get("password")
 
-        user = User.query.filter_by(id=id).first()
+        user = User.query.filter_by(id=id).filter(User.deleted_at==None).first()
         
         if not user:
             return response.badRequest({}, "tidak ada data user")
@@ -93,25 +87,26 @@ def update(id):
         
         db.session.commit()
 
-        return response.success(formatData(user), "Sukses update data user")
+        return response.success(formatDataUser(user), "Sukses update data user")
     
     except Exception as e:
-        return response.badRequest({}, e)
+        return response.badRequest({}, str(e))
     
 @app.route('/users/<id>', methods=['DELETE'])
-def delete(id):
+def deleteUser(id):
     try:
-        user = User.query.filter_by(id=id).first()
+        user = User.query.filter_by(id=id).filter(User.deleted_at==None).first()
         
         if not user:
             return response.badRequest({}, "tidak ada data user")
 
-        db.session.delete(user)
+        # db.session.delete(user)
+        user.deleted_at = datetime.utcnow
         db.session.commit()
 
-        return response.success(formatData(user), "Sukses hapus data user")
+        return response.success(formatDataUser(user), "Sukses hapus data user")
     
     except Exception as e:
-        return response.badRequest({}, e)
+        return response.badRequest({}, str(e))
 
             
