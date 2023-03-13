@@ -19,8 +19,8 @@ def formatJWT(data):
 @app.route('/login', methods=['POST'])
 def login():
     try:
-        username = request.form.get("username")
-        password = request.form.get("password")
+        username = request.json["username"]
+        password = request.json["password"]
 
         user = User.query.filter_by(username=username).first()
         

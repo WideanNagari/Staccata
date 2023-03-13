@@ -10,10 +10,12 @@ import NavButtonAdmin from '../Components/Admin/NavButtonAdmin'
 import { faHouse, faUser, faComments, faQuestionCircle, faSignOut } from '@fortawesome/free-solid-svg-icons'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 const AdminTemplate = () => {
     const [active, setActive] = useState("Dashboard");
-    
+    const history = useHistory();
+
     const menuOnClick = (name) => {
         setActive(name);
     }
@@ -32,7 +34,7 @@ const AdminTemplate = () => {
                     <NavButtonAdmin active={active} name="???" to="/admin" icon={faHouse} clickHandler={menuOnClick}/>
 
                     <div className="w-full border-b-2 border-primary-100 mb-2"></div>
-
+                    
                     <NavButtonAdmin active={active} name="Logout" to="/" icon={faSignOut}/>
                 </div>
                 <Switch>

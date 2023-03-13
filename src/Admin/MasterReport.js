@@ -3,45 +3,35 @@ import SearchBox from "../Components/Admin/SearchBox";
 import ActionButton from "../Components/Admin/ActionButton";
 
 import { faInfoCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import useFetch from "../Tools/useFetch";
 
 const MasterReport = () => {
-    let listReport = [];
-    listReport.push(["1", "Widean Nagari", "Lorem ipsum dolor sit amet consectetur", "Provident labore quisquam vitae earum deleniti repudiandae illum doloremque odit perferendis?"]);
-    listReport.push(["1", "Widean Nagari", "Lorem ipsum dolor sit amet consectetur", "Provident labore quisquam vitae earum deleniti repudiandae illum doloremque odit perferendis?"]);
-    listReport.push(["1", "Widean Nagari", "Lorem ipsum dolor sit amet consectetur", "Provident labore quisquam vitae earum deleniti repudiandae illum doloremque odit perferendis?"]);
-    listReport.push(["1", "Widean Nagari", "Lorem ipsum dolor sit amet consectetur", "Provident labore quisquam vitae earum deleniti repudiandae illum doloremque odit perferendis?"]);
-    listReport.push(["1", "Widean Nagari", "Lorem ipsum dolor sit amet consectetur", "Provident labore quisquam vitae earum deleniti repudiandae illum doloremque odit perferendis?"]);
-    listReport.push(["1", "Widean Nagari", "Lorem ipsum dolor sit amet consectetur", "Provident labore quisquam vitae earum deleniti repudiandae illum doloremque odit perferendis?"]);
-    listReport.push(["1", "Widean Nagari", "Lorem ipsum dolor sit amet consectetur", "Provident labore quisquam vitae earum deleniti repudiandae illum doloremque odit perferendis?"]);
-    listReport.push(["1", "Widean Nagari", "Lorem ipsum dolor sit amet consectetur", "Provident labore quisquam vitae earum deleniti repudiandae illum doloremque odit perferendis?"]);
-    listReport.push(["1", "Widean Nagari", "Lorem ipsum dolor sit amet consectetur", "Provident labore quisquam vitae earum deleniti repudiandae illum doloremque odit perferendis?"]);
-    listReport.push(["1", "Widean Nagari", "Lorem ipsum dolor sit amet consectetur", "Provident labore quisquam vitae earum deleniti repudiandae illum doloremque odit perferendis?"]);
-    listReport.push(["1", "Widean Nagari", "Lorem ipsum dolor sit amet consectetur", "Provident labore quisquam vitae earum deleniti repudiandae illum doloremque odit perferendis?"]);
-    
+    const { data, error, isPending } =  useFetch("http://localhost:5000/reports")
+
     return (
         <div className="admin-master-report flex flex-col w-4/5 p-6 w-full h-full">
             <PageTitle title="Master Report" />
             <div className="w-full flex-grow bg-primary-400 rounded-lg p-5">
                 <SearchBox text="Search Report"/>
 
-                <div class="overflow-auto w-full h-auto max-h-[30rem] scrollbar-hide rounded-lg shadow-xl">
-                    <table class="table-fixed w-full font-semibold">
-                        <thead class="bg-primary-100 text-white text-lg sticky top-0">
+                <div className="overflow-auto w-full h-auto max-h-[30rem] scrollbar-hide rounded-lg shadow-xl">
+                    <table className="table-fixed w-full font-semibold">
+                        <thead className="bg-primary-100 text-white text-lg sticky top-0">
                             <tr>
-                                <th class="w-1/12 py-3">ID</th>
-                                <th class="w-2/12">Reporter</th>
-                                <th class="w-2/12">Title</th>
-                                <th class="w-4/12">Description</th>
-                                <th class="w-3/12">Action</th>
+                                <th className="w-1/12 py-3">ID</th>
+                                <th className="w-2/12">Reporter</th>
+                                <th className="w-2/12">Title</th>
+                                <th className="w-4/12">Description</th>
+                                <th className="w-3/12">Action</th>
                             </tr>
                         </thead>
-                        {listReport.length > 0 ? <tbody>
-                            {listReport.map((report) => (
-                                <tr class="text-center odd:bg-primary-700 even:bg-primary-800">
-                                    <td>{report[0]}</td>
-                                    <td>{report[1]}</td>
-                                    <td className="truncate">{report[2]}</td>
-                                    <td className="truncate">{report[3]}</td>
+                        {data!=null ? <tbody>
+                            {data.data.map((report) => (
+                                <tr className="text-center odd:bg-primary-700 even:bg-primary-800" key={report.id}>
+                                    <td>{report.id}</td>
+                                    <td>{report.reporter.username}</td>
+                                    <td className="truncate">{report.title}</td>
+                                    <td className="truncate">{report.description}</td>
                                     <td className="flex gap-2 p-1">
                                         <ActionButton text="Details" icon={faInfoCircle} />
                                         <ActionButton text="Delete" icon={faTrashAlt} />
@@ -50,8 +40,8 @@ const MasterReport = () => {
                             ))}
                         </tbody> :
                         <tbody>
-                            <tr class="text-center bg-primary-700 text-xl">
-                                <td colspan="5" class="py-5">Belum ada data tersedia</td>
+                            <tr className="text-center bg-primary-700 text-xl">
+                                <td colSpan="5" className="py-5">Belum ada data tersedia</td>
                             </tr>
                         </tbody>}
                     </table>

@@ -3,7 +3,11 @@ import LightButton from '../Components/User/LightButton';
 import { faMagnifyingGlass, faPlay, faThumbsUp, faThumbsDown, faDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { ReactSession } from 'react-client-session';
+
 const UserDashboard = () => {
+    const user_login = ReactSession.get("user_login");
+
     return ( 
         <div className="user-dashboard gap-3 h-10 flex flex-col flex-grow gap-3 px-36 py-5">
             <div className="bg-primary-400 w-full h-1/2 rounded-lg overflow-hidden flex shadow-black shadow-xl">
