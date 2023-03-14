@@ -1,4 +1,4 @@
-from app.model.users import User
+from app.model.users import Users
 from app.model.faqs import FAQ
 from app.model.reports import Report
 
@@ -21,7 +21,7 @@ def seed(records):
             guitar = random.randint(0, 10)
             report = random.randint(0, 10)
 
-            user = User(username=username, email=email, password=password, file_converted_piano=piano, file_converted_guitar=guitar, report_sent=report)
+            user = Users(username=username, email=email, password=password, file_converted_piano=piano, file_converted_guitar=guitar, report_sent=report)
             user.setPassword(password)
             db.session.add(user)
         db.session.commit()
@@ -34,7 +34,7 @@ def seed(records):
             db.session.add(faq)
         db.session.commit()
 
-        ids = User.query.with_entities(User.id).all()
+        ids = Users.query.with_entities(Users.id).all()
         arr_id = []
         for i in ids:
             arr_id.append(i[0])

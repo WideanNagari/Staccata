@@ -10,9 +10,9 @@ def formatDataFAQ(data):
         'id': data.id,
         'question': data.question,
         'answer': data.answer,
-        'created_at': data.created_at,
-        'updated_at': data.updated_at,
-        'deleted_at': data.deleted_at,
+        'created_at': data.created_at.strftime('%A, %d %B %Y %H:%M:%S'),
+        'updated_at': data.updated_at.strftime('%A, %d %B %Y %H:%M:%S'),
+        'deleted_at': data.deleted_at.strftime('%A, %d %B %Y %H:%M:%S') if data.deleted_at else data.deleted_at
     }
     return data
 
@@ -25,7 +25,7 @@ def formatArrayFAQ(data):
 @app.route('/faq', methods=['GET'])
 def getAllFAQ():
     try:
-        faq = FAQ.query.filter(FAQ.deleted_at==None)
+        faq = FAQ.query.all()
         data = formatArrayFAQ(faq)
         return response.success(data, "success")
     except Exception as e:
@@ -34,7 +34,7 @@ def getAllFAQ():
 @app.route('/faq/<id>', methods=['GET'])
 def getOneFAQ(id):
     try: 
-        faq = FAQ.query.filter_by(id=id).filter(FAQ.deleted_at==None).first()
+        faq = FAQ.query.filter_by(id=id).first()
 
         if not faq:
             return response.badRequest({}, "tidak ada data FAQ")
@@ -47,8 +47,8 @@ def getOneFAQ(id):
 @app.route('/faq', methods=['POST'])
 def createFAQ():
     try:
-        question = request.form.get("question")
-        answer = request.form.get("answer")
+        question = request.json["question"]
+        answer = request.json["answer"]
 
         faq = FAQ(question=question, answer=answer)
         db.session.add(faq)
@@ -62,8 +62,8 @@ def createFAQ():
 @app.route('/faq/<id>', methods=['PUT'])
 def updateFAQ(id):
     try:
-        question = request.form.get("question")
-        answer = request.form.get("answer")
+        question = request.json["question"]
+        answer = request.json["answer"]
 
         faq = FAQ.query.filter_by(id=id).filter(FAQ.deleted_at==None).first()
         
@@ -72,6 +72,7 @@ def updateFAQ(id):
 
         faq.question = question
         faq.answer = answer
+        faq.updated_at = datetime.now()
         
         db.session.commit()
 
@@ -83,15 +84,19 @@ def updateFAQ(id):
 @app.route('/faq/<id>', methods=['DELETE'])
 def deleteFAQ(id):
     try:
-        faq = FAQ.query.filter_by(id=id).filter(FAQ.deleted_at==None).first()
+        faq = FAQ.query.filter_by(id=id).first()
         
         if not faq:
             return response.badRequest({}, "tidak ada data FAQ")
-
-        faq.deleted_at = datetime.utcnow
+        
+        if(faq.deleted_at==None):
+            faq.deleted_at = datetime.now()
+        else:
+            faq.deleted_at = None
+            
         # db.session.delete(faq)
         db.session.commit()
-
+        
         return response.success(formatDataFAQ(faq), "Sukses hapus data FAQ")
     
     except Exception as e:

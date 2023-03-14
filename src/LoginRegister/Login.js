@@ -39,14 +39,6 @@ const Login = () => {
         })
     }
 
-    const usernameChanged = (username) => {
-        setUsername(username);
-    }
-
-    const passwordChanged = (password) => {
-        setPassword(password);
-    }
-
     const rememberChanged = () => {
         setRemember(!remember);
     }
@@ -66,12 +58,12 @@ const Login = () => {
                         <h1 className="font-bold text-5xl text-center mb-14">Log in</h1>
                         <form onSubmit={handleSubmit}>
                             <InputText label="Username" name="username" id="username" type="text"
-                                    value={username} 
-                                    handleChange={usernameChanged} />
+                                    value={username}
+                                    handleChange={setUsername} />
 
                             <InputText label="Password" name="password" id="password" type="password" 
-                                    value={password} 
-                                    handleChange={passwordChanged} />
+                                    value={password}
+                                    handleChange={setPassword} />
 
                             <input type="checkbox" name="rememberme" id="remember" className="w-4 h-4 mb-5" 
                                     value={remember} 

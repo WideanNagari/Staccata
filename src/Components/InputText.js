@@ -5,10 +5,7 @@ const InputText = (props) => {
     const id = props.id || ""
 
     const value = props.value
-    const handleChange = (v) => {
-        props.handleChange(v)
-    };
-
+    const handleChange = props.handleChange
 
     return (
         <div>

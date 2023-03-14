@@ -2,16 +2,68 @@ import PageTitle from "../Components/Admin/PageTitle";
 import SearchBox from "../Components/Admin/SearchBox";
 import ActionButton from "../Components/Admin/ActionButton";
 
-import { faInfoCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
+import { faInfoCircle, faExclamationCircle, faXmark, faRefresh } from '@fortawesome/free-solid-svg-icons'
 
-import { ReactSession } from 'react-client-session';
+// import { ReactSession } from 'react-client-session';
 import useFetch from "../Tools/useFetch";
+import { useState } from "react";
+import axios from "axios";
 
 const MasterUser = () => {
-    const { data, error, isPending } =  useFetch("http://localhost:5000/users")
+    const { data } =  useFetch("http://localhost:5000/users")
+    const [ isOpenModal, setOpenModal ] = useState(false)
+
+    const [ username, setUsername ] = useState("")
+    const [ fullname, setFullname ] = useState("")
+    const [ email, setEmail ] = useState("")
+    const [ converted, setConverted ] = useState("")
+    const [ reportSent, setReportSent ] = useState("")
+    const [ joined, setJoined ] = useState("")
     
-    const user_login = ReactSession.get("user_login");
-    
+    // const user_login = ReactSession.get("user_login");
+
+    const openDetails = (data) => {
+        let join = data.created_at.split(' ')
+
+        if(data.first_name===null)
+            setFullname("-")
+        else
+            setFullname(data.first_name+" "+data.last_name)
+
+        setUsername(data.username)
+        setEmail(data.email)
+        setConverted(data.file_converted_piano +" (to Piano) " + data.file_converted_guitar + " (to Guitar)")
+        setReportSent(data.report_sent)
+        setJoined(join[0]+" "+join[1]+" "+join[2]+" "+join[3])
+        setOpenModal(true)
+    }
+
+    const closeDetails = () => {
+        setOpenModal(false)
+    }
+
+    const ban = (id) => {
+        if(id!==0){
+            axios
+            .delete("http://localhost:5000/users/"+id)
+            .then((e) => {
+                if (e.status !== 200){
+                    throw Error("could not delete the data")
+                }else{
+                    const deleted_data = e.data.data
+                    console.log(deleted_data)
+                    // To Do
+                    // auto reload data of the table
+                }
+            })
+            .catch(err => {
+                if (err.name === 'AxiosError'){
+                    console.log('delete aborted')
+                }
+            })
+        }
+    }
+
     return (
         <div className="admin-master-user flex flex-col w-4/5 p-6 w-full h-full">
             <PageTitle title="Master User" />
@@ -37,8 +89,13 @@ const MasterUser = () => {
                                     <td>{user.file_converted_piano + user.file_converted_guitar}</td>
                                     <td>{user.report_sent}</td>
                                     <td className="flex gap-2 p-1">
-                                        <ActionButton text="Details" icon={faInfoCircle} />
-                                        <ActionButton text="Ban" icon={faExclamationCircle} />
+                                        <ActionButton text="Details" icon={faInfoCircle} handleClick={() => openDetails(user)} />
+                                        {!user.deleted_at && 
+                                            <ActionButton text="Ban" icon={faExclamationCircle} handleClick={() => ban(user.id)} />
+                                        }
+                                        {user.deleted_at && 
+                                            <ActionButton text="Unban" icon={faRefresh} handleClick={() => ban(user.id)} />
+                                        }
                                     </td>
                                 </tr>
                             ))}
@@ -51,6 +108,41 @@ const MasterUser = () => {
                     </table>
                 </div>
             </div>
+            { isOpenModal && <div id="bg" className="fixed top-0 left-0 w-screen h-screen bg-primary bg-opacity-60"
+                    onClick={() => setOpenModal(false)}></div>
+            }
+
+            { isOpenModal &&             
+                <div id="modalSession" className="fixed top-[20%] left-[25%] bg-primary-900 h-3/5 w-1/2 text-primary rounded-lg
+                                                    py-5">
+                    <div className="text-4xl font-bold text-center mb-5">
+                        <p>User Profile</p>
+                    </div>
+                    <div className="flex items-center justify-center text-xl">
+                        <div className="flex items-center justify-center gap-2 w-4/5 border-solid border-primary-400 border-y-2 py-7">
+                            <div className="text-right font-semibold w-1/2">
+                                <p className="mb-2">Username :</p>
+                                <p className="mb-2">Full Name :</p>
+                                <p className="mb-2">E-mail :</p>
+                                <p className="mb-2">File Converted :</p>
+                                <p className="mb-2">Report Sent :</p>
+                                <p>Joined Since :</p>
+                            </div>
+                            <div className="w-1/2">
+                                <p className="mb-2">{username}</p>
+                                <p className="mb-2">{fullname}</p>
+                                <p className="mb-2">{email}</p>
+                                <p className="mb-2">{converted}</p>
+                                <p className="mb-2">{reportSent} Report(s)</p>
+                                <p>{joined}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="text-4xl font-bold text-center mt-5">
+                        <ActionButton text="Close" icon={faXmark} handleClick={closeDetails} />
+                    </div>
+                </div>
+            }
         </div>
     );
 }

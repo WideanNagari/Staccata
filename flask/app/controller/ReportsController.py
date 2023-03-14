@@ -1,5 +1,5 @@
 from app.model.reports import Report
-from app.model.users import User
+from app.model.users import Users
 from app.controller.UsersController import formatDataUser
 
 from app import app, db
@@ -13,16 +13,16 @@ def formatDataReport(data, reporter):
         'title': data.title,
         'description': data.description,
         'reporter': reporter,
-        'created_at': data.created_at,
-        'updated_at': data.updated_at,
-        'deleted_at': data.deleted_at,
+        'created_at': data.created_at.strftime('%A, %d %B %Y %H:%M:%S'),
+        'updated_at': data.updated_at.strftime('%A, %d %B %Y %H:%M:%S'),
+        'deleted_at': data.deleted_at.strftime('%A, %d %B %Y %H:%M:%S') if data.deleted_at else data.deleted_at
     }
     return data
 
 def formatArrayReport(data):
     arr = []
     for i in data:
-        user = User.query.filter_by(id=i.reporter).first()
+        user = Users.query.filter_by(id=i.reporter).first()
         data_user = formatDataUser(user)
         arr.append(formatDataReport(i, data_user))
     return arr
@@ -30,7 +30,7 @@ def formatArrayReport(data):
 @app.route('/reports', methods=['GET'])
 def getAllReport():
     try:
-        report = Report.query.filter(Report.deleted_at==None)
+        report = Report.query.all()
 
         data = formatArrayReport(report)
 
@@ -41,12 +41,12 @@ def getAllReport():
 @app.route('/reports/<id>', methods=['GET'])
 def getOneReport(id):
     try: 
-        report = Report.query.filter_by(id=id).filter(Report.deleted_at==None).first()
+        report = Report.query.filter_by(id=id).first()
 
         if not report:
             return response.badRequest({}, "tidak ada data report")
         
-        user = User.query.filter_by(id=report.reporter).first()
+        user = Users.query.filter_by(id=report.reporter).first()
         data_user = formatDataUser(user)
         
         return response.success(formatDataReport(report, data_user), "success")
@@ -57,15 +57,18 @@ def getOneReport(id):
 @app.route('/reports', methods=['POST'])
 def createReport():
     try:
-        title = request.form.get("title")
-        description = request.form.get("description")
-        reporter = request.form.get("reporter")
+        title = request.json["title"]
+        description = request.json["description"]
+        reporter = request.json["reporter"]
+
+        if(title=="" or description=="" or reporter==""):
+            return response.badRequest({}, "Mohon isi semua data!")
 
         report = Report(title=title, description=description, reporter=int(reporter))
         db.session.add(report)
         db.session.commit()
 
-        user = User.query.filter_by(id=report.reporter).first()
+        user = Users.query.filter_by(id=report.reporter).first()
         data_user = formatDataUser(user)
 
         return response.success(formatDataReport(report, data_user), "Sukses menambah data report")
@@ -76,9 +79,9 @@ def createReport():
 @app.route('/reports/<id>', methods=['PUT'])
 def updateReport(id):
     try:
-        title = request.form.get("title")
-        description = request.form.get("description")
-        reporter = request.form.get("reporter")
+        title = request.json["title"]
+        description = request.json["description"]
+        reporter = request.json["reporter"]
 
         report = Report.query.filter_by(id=id).filter(Report.deleted_at==None).first()
         
@@ -88,10 +91,11 @@ def updateReport(id):
         report.title = title
         report.description = description
         report.reporter = int(reporter)
+        report.updated_at = datetime.now()
         
         db.session.commit()
 
-        user = User.query.filter_by(id=report.reporter).first()
+        user = Users.query.filter_by(id=report.reporter).first()
         data_user = formatDataUser(user)
 
         return response.success(formatDataReport(report, data_user), "Sukses update data report")
@@ -102,17 +106,20 @@ def updateReport(id):
 @app.route('/reports/<id>', methods=['DELETE'])
 def deleteReport(id):
     try:
-        report = Report.query.filter_by(id=id).filter(Report.deleted_at==None).first()
+        report = Report.query.filter_by(id=id).first()
         
         if not report:
             return response.badRequest({}, "tidak ada data report")
 
+        if(report.deleted_at==None):
+            report.deleted_at = datetime.now()
+        else:
+            report.deleted_at = None
 
-        report.deleted_at = datetime.utcnow
         # db.session.delete(report)
         db.session.commit()
 
-        user = User.query.filter_by(id=report.reporter).first()
+        user = Users.query.filter_by(id=report.reporter).first()
         data_user = formatDataUser(user)
 
         return response.success(formatDataReport(report, data_user), "Sukses hapus data report")

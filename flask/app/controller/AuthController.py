@@ -1,4 +1,4 @@
-from app.model.users import User
+from app.model.users import Users
 
 from app import app, db
 from app.model import response
@@ -22,11 +22,14 @@ def login():
         username = request.json["username"]
         password = request.json["password"]
 
-        user = User.query.filter_by(username=username).first()
+        user = Users.query.filter_by(username=username).first()
         
         if not user:
             return response.badRequest({}, "tidak ada data user")
-
+        
+        if user.deleted_at!=None:
+            return response.badRequest({}, "Anda di banned!")
+        
         if not user.checkPassword(password):
             return response.badRequest({}, "Password salah!")
         

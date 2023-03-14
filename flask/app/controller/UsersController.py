@@ -1,4 +1,4 @@
-from app.model.users import User
+from app.model.users import Users
 
 from app import app, db
 from app.model import response
@@ -10,15 +10,17 @@ def formatDataUser(data):
     data = {
         'id': data.id,
         'username': data.username,
+        'first_name': data.first_name,
+        'last_name': data.last_name,
         'email': data.email,
         'password': data.password,
         'file_converted_piano': data.file_converted_piano,
         'file_converted_guitar': data.file_converted_guitar,
         'report_sent': data.report_sent,
         'level': data.level,
-        'created_at': data.created_at,
-        'updated_at': data.updated_at,
-        'deleted_at': data.deleted_at,
+        'created_at': data.created_at.strftime('%A, %d %B %Y %H:%M:%S'),
+        'updated_at': data.updated_at.strftime('%A, %d %B %Y %H:%M:%S'),
+        'deleted_at': data.deleted_at.strftime('%A, %d %B %Y %H:%M:%S') if data.deleted_at else data.deleted_at
     }
     return data
 
@@ -31,7 +33,7 @@ def formatArray(data):
 @app.route('/users', methods=['GET'])
 def getAllUser():
     try:
-        user = User.query.filter(User.deleted_at==None)
+        user = Users.query.all()
         data = formatArray(user)
         return response.success(data, "success")
     except Exception as e:
@@ -40,7 +42,7 @@ def getAllUser():
 @app.route('/users/<id>', methods=['GET'])
 def getOneUser(id):
     try: 
-        user = User.query.filter_by(id=id).filter(User.deleted_at==None).first()
+        user = Users.query.filter_by(id=id).first()
 
         if not user:
             return response.badRequest({}, "tidak ada data user")
@@ -53,12 +55,12 @@ def getOneUser(id):
 @app.route('/users', methods=['POST'])
 def createUser():
     try:
-        username = request.form.get("username")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        level = request.form.get("level")
+        username = request.json["username"]
+        email = request.json["email"]
+        password = request.json["password"]
+        level = request.json["level"]
 
-        user = User(username=username, email=email, password=password, level=level)
+        user = Users(username=username, email=email, password=password, level=level)
         user.setPassword(password)
         db.session.add(user)
         db.session.commit()
@@ -71,11 +73,11 @@ def createUser():
 @app.route('/users/<id>', methods=['PUT'])
 def updateUser(id):
     try:
-        username = request.form.get("username")
-        email = request.form.get("email")
-        password = request.form.get("password")
+        username = request.json["username"]
+        email = request.json["email"]
+        password = request.json["password"]
 
-        user = User.query.filter_by(id=id).filter(User.deleted_at==None).first()
+        user = Users.query.filter_by(id=id).filter(Users.deleted_at==None).first()
         
         if not user:
             return response.badRequest({}, "tidak ada data user")
@@ -92,16 +94,41 @@ def updateUser(id):
     except Exception as e:
         return response.badRequest({}, str(e))
     
+@app.route('/users/advanced/<id>', methods=['PUT'])
+def updateUser2(id):
+    try:
+        firstName = request.json["first_name"]
+        lastName = request.json["last_name"]
+
+        user = Users.query.filter_by(id=id).filter(Users.deleted_at==None).first()
+        
+        if not user:
+            return response.badRequest({}, "tidak ada data user")
+
+        user.first_name = firstName
+        user.last_name = lastName
+        user.updated_at = datetime.now()
+        
+        db.session.commit()
+
+        return response.success(formatDataUser(user), "Sukses update data user")
+    
+    except Exception as e:
+        return response.badRequest({}, str(e))
+    
 @app.route('/users/<id>', methods=['DELETE'])
 def deleteUser(id):
     try:
-        user = User.query.filter_by(id=id).filter(User.deleted_at==None).first()
+        user = Users.query.filter_by(id=id).first()
         
         if not user:
             return response.badRequest({}, "tidak ada data user")
 
         # db.session.delete(user)
-        user.deleted_at = datetime.utcnow
+        if(user.deleted_at==None):
+            user.deleted_at = datetime.now()
+        else:
+            user.deleted_at = None
         db.session.commit()
 
         return response.success(formatDataUser(user), "Sukses hapus data user")
