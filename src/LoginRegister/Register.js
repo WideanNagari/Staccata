@@ -14,6 +14,16 @@ const Register = () => {
     const [confPassword, setConfPassword] = useState('')
     const history = useHistory();
 
+    const swal_error = (err) => {
+        Swal.fire({
+            title: err.response.data.message,
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK'
+        });
+    }
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         if(username!=="" && email!=="" && password!=="" && confPassword!==""){
@@ -22,13 +32,7 @@ const Register = () => {
                 .post("http://localhost:5000/users", {username: username, email:email, password: password, level:0})
                 .then((e) => {
                     if (e.status !== 200){
-                        Swal.fire({
-                            title: e.response.data.message,
-                            icon: 'error',
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'OK'
-                        });
+                        swal_error(e)
                     }else{
                         Swal.fire(
                             'Register Success!',
@@ -38,18 +42,12 @@ const Register = () => {
                         .then(() => {
                             const data = e.data.data
                             console.log(data)
-                            history.push('/')
+                            history.push('/login')
                         })
                     }
                 })
                 .catch(err => {
-                    Swal.fire({
-                        title: err.response.data.message,
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'OK'
-                    });
+                    swal_error(e)
                 })
             }else{
                 Swal.fire({
@@ -105,7 +103,7 @@ const Register = () => {
                             
                             <div className="flex gap-1">
                                 <p>Already Registered?</p>
-                                <a href="/" className="text-blue-700">Login Here!</a>
+                                <a href="/login" className="text-blue-700">Login Here!</a>
                             </div>
                         </form>
                     </div>

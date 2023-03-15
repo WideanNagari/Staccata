@@ -2,12 +2,21 @@ import LightButton from '../Components/User/LightButton';
 
 import { faMagnifyingGlass, faPlay, faThumbsUp, faThumbsDown, faDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import { ReactSession } from 'react-client-session';
+// import axios from 'axios';
+// import Swal from "sweetalert2";
 
 const UserDashboard = () => {
-    const user_login = ReactSession.get("user_login");
 
+    // const swal_error = (err) => {
+    //     Swal.fire({
+    //         title: err.response.data.message,
+    //         icon: 'error',
+    //         confirmButtonColor: '#3085d6',
+    //         cancelButtonColor: '#d33',
+    //         confirmButtonText: 'OK'
+    //     });
+    // }
+    
     return ( 
         <div className="user-dashboard gap-3 h-10 flex flex-col flex-grow gap-3 px-36 py-5">
             <div className="bg-primary-400 w-full h-1/2 rounded-lg overflow-hidden flex shadow-black shadow-xl">

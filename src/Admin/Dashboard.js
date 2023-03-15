@@ -1,12 +1,8 @@
 import DashboardInfoBox from "../Components/Admin/DashboardInfoBox";
 
 import { faMusic, faSmile, faUsers, faComments } from '@fortawesome/free-solid-svg-icons'
-import { ReactSession } from 'react-client-session';
 
-const UserDashboard = () => {
-    const user_login = ReactSession.get("user_login");
-    console.log(user_login)
-
+const AdminDashboard = () => {
     return ( 
         <div className="admin-dashboard w-4/5 p-6 w-full overflow-y-scroll scrollbar-hide">
             <div className="flex gap-3 w-full mb-3">
@@ -39,4 +35,4 @@ const UserDashboard = () => {
     );
 }
  
-export default UserDashboard;
+export default AdminDashboard;

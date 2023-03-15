@@ -1,4 +1,5 @@
 const About = () => {
+
     return (
         <div className="user-about flex-grow px-36 py-10">
             <div className="w-full h-full bg-primary-400 rounded-lg shadow-black shadow-2xl flex">

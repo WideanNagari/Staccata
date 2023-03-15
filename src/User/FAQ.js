@@ -5,7 +5,7 @@ import useFetch from "../Tools/useFetch";
 
 const FAQ = () => {
     const { data } =  useFetch("http://localhost:5000/faq")
-
+    
     return (
         <div className="user-faq flex flex-col flex-grow px-36 py-5">
             <PageTitle title="Frequently Asked Question" subtitle="Find the similar problem to solve yours." />

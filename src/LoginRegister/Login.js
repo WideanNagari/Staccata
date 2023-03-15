@@ -2,16 +2,28 @@ import InputText from "../Components/InputText";
 import Button from "../Components/Button";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 
 import Swal from "sweetalert2";
 // import withReactContent from "sweetalert2-react-content"
 import axios from "axios";
 
 const Login = () => {
+    const [cookies, setCookie] = useCookies(['user_login']);
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [remember, setRemember] = useState(true)
     const history = useHistory();
+    
+    const swal_error = (err) => {
+        Swal.fire({
+            title: err.response.data.message,
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK'
+        });
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -20,33 +32,19 @@ const Login = () => {
             .post("http://localhost:5000/login", {username: username, password: password})
             .then((e) => {
                 if (e.status !== 200){
-                    Swal.fire({
-                        title: e.response.data.message,
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'OK'
-                    });
+                    swal_error(e)
                     // throw Error("could not post the data")
                 }else{
                     const data = e.data.data.data
                     const level = data.level
-                    if(remember){
-    
-                    }
-                    // ReactSession.set("user_login", data);
-                    if(level===0) history.push('/user')
+                    setCookie('user_login', data);
+                    
+                    if(level===0) history.push('/')
                     else if(level===1) history.push('/admin')
                 }
             })
             .catch(err => {
-                Swal.fire({
-                    title: err.response.data.message,
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'OK'
-                });
+                swal_error(e)
                 // if (err.name === 'AxiosError'){
                 //     console.log('post aborted')
                 // }

@@ -7,17 +7,57 @@ import NotFound from '../Etc/NotFound'
 
 import NavButtonAdmin from '../Components/Admin/NavButtonAdmin'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHouse, faUser, faComments, faQuestionCircle, faSignOut } from '@fortawesome/free-solid-svg-icons'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { useState } from "react";
+import { useCookies } from 'react-cookie';
 import { useHistory } from "react-router-dom";
 
-const AdminTemplate = () => {
-    const [active, setActive] = useState("Dashboard");
-    const history = useHistory();
+import Swal from "sweetalert2"
 
+const AdminTemplate = () => {
+    const [cookies, setCookie, removeCookie] = useCookies(['user_login']);
+
+    const page = cookies.active_page===undefined ? "Dashboard" : cookies.active_page
+    const [active, setActive] = useState(page);
+
+    const history = useHistory()
+    if(cookies.user_login===undefined || cookies.user_login.level===0){
+        history.push('/')
+    }
+
+    // const swal_error = (err) => {
+    //     Swal.fire({
+    //         title: err.response.data.message,
+    //         icon: 'error',
+    //         confirmButtonColor: '#3085d6',
+    //         cancelButtonColor: '#d33',
+    //         confirmButtonText: 'OK'
+    //     });
+    // }
+    
     const menuOnClick = (name) => {
         setActive(name);
+        setCookie('active_page', name);
+    }
+
+    const logout = () => {
+        Swal.fire({
+            title: 'Are you sure you want to logout?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                removeCookie('user_login');
+                removeCookie('active_page');
+                history.push('/')
+            }
+        });
     }
     
     return (
@@ -35,7 +75,14 @@ const AdminTemplate = () => {
 
                     <div className="w-full border-b-2 border-primary-100 mb-2"></div>
                     
-                    <NavButtonAdmin active={active} name="Logout" to="/" icon={faSignOut}/>
+                    <div className="text-white flex gap-4 items-center py-3 mb-2 rounded-lg
+                                    hover:bg-primary-200 duration-200 cursor-pointer" onClick={logout}>
+                        <div className="w-2 h-8 border-2 border-primary-900 rounded-xl"></div>
+                        <div className="flex gap-4 items-center">
+                            <FontAwesomeIcon icon={faSignOut} size="lg" fixedWidth/>
+                            <p className="text-lg">Logout</p>
+                        </div>
+                    </div>
                 </div>
                 <Switch>
                     <Route exact path="/admin">

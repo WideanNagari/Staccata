@@ -3,19 +3,25 @@ import Input from "../Components/User/Input";
 import LightButton from "../Components/User/LightButton";
 import { useState } from "react";
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { useCookies } from 'react-cookie';
 
 import axios from "axios"
 import Swal from "sweetalert2"
 
 const Reports = () => {
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
+    const [cookies, setCookie] = useCookies(['user_login']);
+
+    const nama_depan = cookies.user_login===undefined || cookies.user_login.first_name===null ? '' : cookies.user_login.first_name
+    const nama_belakang = cookies.user_login===undefined || cookies.user_login.last_name===null ? '' : cookies.user_login.last_name
+
+    const [firstName, setFirstName] = useState(nama_depan)
+    const [lastName, setLastName] = useState(nama_belakang)
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
-
+    
     const handleSubmit = (e) => {
         e.preventDefault();
-        const id = "1"
+        const id = cookies.user_login.id
         if(firstName!=="" && lastName!=="" && title!=="" && description!==""){
             axios
             .post("http://localhost:5000/reports", {title: title, description: description, reporter:id})
@@ -29,8 +35,8 @@ const Reports = () => {
                         confirmButtonText: 'OK'
                     });
                 }else{
-                    const data = e.data.data
-                    console.log(data)
+                    // const data = e.data.data
+                    // console.log(data)
                     axios
                     .put("http://localhost:5000/users/advanced/"+id, {first_name: firstName, last_name: lastName})
                     .then((e) => {
@@ -49,8 +55,8 @@ const Reports = () => {
                                 'success'
                             )
                             .then(() => {
-                                const data = e.data.data
-                                console.log(data)
+                                // const data = e.data.data
+                                // console.log(data)
                                 setFirstName("")
                                 setLastName("")
                                 setTitle("")

@@ -10,9 +10,13 @@ def formatJWT(data):
     data = {
         'id': data.id,
         'username': data.username,
+        'first_name': data.first_name,
+        'last_name': data.last_name,
         'email': data.email,
-        'password': data.password,
-        'level': data.level
+        'level': data.level,
+        'file_converted_piano': data.file_converted_piano,
+        'file_converted_guitar': data.file_converted_guitar,
+        'report_sent': data.report_sent
     }
     return data
 
