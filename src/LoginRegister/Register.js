@@ -1,9 +1,77 @@
 import InputText from "../Components/InputText";
 import Button from "../Components/Button";
 
+import { useState } from "react";
+import { useHistory } from "react-router-dom";
+
+import axios from "axios";
+import Swal from "sweetalert2";
+
 const Register = () => {
+    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confPassword, setConfPassword] = useState('')
+    const history = useHistory();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if(username!=="" && email!=="" && password!=="" && confPassword!==""){
+            if(password===confPassword){
+                axios
+                .post("http://localhost:5000/users", {username: username, email:email, password: password, level:0})
+                .then((e) => {
+                    if (e.status !== 200){
+                        Swal.fire({
+                            title: e.response.data.message,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'OK'
+                        });
+                    }else{
+                        Swal.fire(
+                            'Register Success!',
+                            'Your account successfully registered.',
+                            'success'
+                        )
+                        .then(() => {
+                            const data = e.data.data
+                            console.log(data)
+                            history.push('/')
+                        })
+                    }
+                })
+                .catch(err => {
+                    Swal.fire({
+                        title: err.response.data.message,
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'OK'
+                    });
+                })
+            }else{
+                Swal.fire({
+                    title: "Password and Confirm Password must be the same!",
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }else{
+            Swal.fire({
+                title: "All field must be filled!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
+        }
+    }
+
     return (
-        
         <div className="login-main h-full">
             <div className="h-full w-full flex absolute">
                 <div className="h-full w-1/2"></div>
@@ -16,13 +84,22 @@ const Register = () => {
                     </div>
                     <div className="bg-primary-900 h-full w-1/2 py-12 px-10">
                         <h1 className="font-bold text-5xl text-center mb-14">Register</h1>
-                        <form action="">
-                            <InputText label="Username" name="username" type="text" />
+                        <form onSubmit={handleSubmit}>
+                            <InputText label="Username" name="username" type="text" id="username"
+                                        value={username}
+                                        handleChange={setUsername} />
 
-                            <InputText label="E-Mail" name="email" type="email" />
+                            <InputText label="E-Mail" name="email" type="email" id="email"
+                                        value={email}
+                                        handleChange={setEmail} />
 
-                            <InputText label="Password" name="password" type="password" />
-                            <InputText label="Confirm Password" name="confirmPassword" type="password" />
+                            <InputText label="Password" name="password" type="password" id="password"
+                                        value={password}
+                                        handleChange={setPassword} />
+
+                            <InputText label="Confirm Password" name="confirmPassword" type="password"  id="confirmPassword"
+                                        value={confPassword}
+                                        handleChange={setConfPassword} />
 
                             <Button text="Register" addedClass="mt-1 mb-5"/>
                             

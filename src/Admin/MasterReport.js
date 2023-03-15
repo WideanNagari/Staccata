@@ -6,6 +6,7 @@ import { faInfoCircle, faTrashAlt, faXmark, faRefresh } from '@fortawesome/free-
 import useFetch from "../Tools/useFetch";
 import { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const MasterReport = () => {
     const { data } =  useFetch("http://localhost:5000/reports")
@@ -16,6 +17,16 @@ const MasterReport = () => {
     const [ title, setTitle ] = useState("")
     const [ description, setDescription ] = useState("")
 
+    const swal_error = (err) => {
+        Swal.fire({
+            title: err.response.data.message,
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK'
+        });
+    }
+    
     const openDetails = (data) => {
         if(data.reporter.first_name===null)
             setReporter(data.reporter.username)
@@ -36,25 +47,53 @@ const MasterReport = () => {
         setOpenModal(false)
     }
 
-    const deletes = (id) => {
+    const deletes = (id, state) => {
+        let states = ["",""]
         if(id!==0){
-            axios
-            .delete("http://localhost:5000/reports/"+id)
-            .then((e) => {
-                if (e.status !== 200){
-                    throw Error("could not delete the data")
-                }else{
-                    const deleted_data = e.data.data
-                    console.log(deleted_data)
-                    // To Do
-                    // auto reload data of the table
+            if(state===1){
+                states[0] = "delete";
+                states[1] = "Deleted";
+            }
+            else{
+                states[0] = "restore";
+                states[1] = "Restored";
+            }
+
+            Swal.fire({
+                title: 'Are you sure you want to '+states[0]+' this report?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios
+                    .delete("http://localhost:5000/reports/"+id)
+                    .then((e) => {
+                        if (e.status !== 200){
+                            swal_error(e)
+                        }else{
+                            Swal.fire({
+                                title: states[1]+'!',
+                                text: 'The report has been '+states[1].toLowerCase()+'.',
+                                icon: 'success',
+                                confirmButtonText: 'Close',
+                            })
+                            .then(() => {
+                                const deleted_data = e.data.data
+                                console.log(deleted_data)
+                                // To Do
+                                // auto reload data of the table
+                            })
+                        }
+                    })
+                    .catch(e => {
+                        swal_error(e)
+                    })
                 }
-            })
-            .catch(err => {
-                if (err.name === 'AxiosError'){
-                    console.log('delete aborted')
-                }
-            })
+            });
         }
     }
     
@@ -85,10 +124,10 @@ const MasterReport = () => {
                                     <td className="flex gap-2 p-1">
                                         <ActionButton text="Details" icon={faInfoCircle} handleClick={() => openDetails(report)} />
                                         {!report.deleted_at && 
-                                            <ActionButton text="Delete" icon={faTrashAlt} handleClick={() => deletes(report.id)} />
+                                            <ActionButton text="Delete" icon={faTrashAlt} handleClick={() => deletes(report.id, 1)} />
                                         }
                                         {report.deleted_at && 
-                                            <ActionButton text="Restore" icon={faRefresh} handleClick={() => deletes(report.id)} />
+                                            <ActionButton text="Restore" icon={faRefresh} handleClick={() => deletes(report.id, 0)} />
                                         }
                                     </td>
                                 </tr>

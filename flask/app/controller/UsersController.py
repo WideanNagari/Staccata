@@ -60,6 +60,14 @@ def createUser():
         password = request.json["password"]
         level = request.json["level"]
 
+        user_check = Users.query.filter_by(username=username).first()
+        if(user_check):
+            return response.badRequest({}, "Username already registered!")
+        
+        user_check = Users.query.filter_by(email=email).first()
+        if(user_check):
+            return response.badRequest({}, "Email already registered!")
+
         user = Users(username=username, email=email, password=password, level=level)
         user.setPassword(password)
         db.session.add(user)

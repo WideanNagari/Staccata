@@ -3,7 +3,9 @@ import Input from "../Components/User/Input";
 import LightButton from "../Components/User/LightButton";
 import { useState } from "react";
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+
 import axios from "axios"
+import Swal from "sweetalert2"
 
 const Reports = () => {
     const [firstName, setFirstName] = useState('')
@@ -13,42 +15,77 @@ const Reports = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
+        const id = "1"
         if(firstName!=="" && lastName!=="" && title!=="" && description!==""){
             axios
-            .post("http://localhost:5000/reports", {title: title, description: description, reporter:"1"})
+            .post("http://localhost:5000/reports", {title: title, description: description, reporter:id})
             .then((e) => {
                 if (e.status !== 200){
-                    throw Error("could not post the data")
+                    Swal.fire({
+                        title: e.response.data.message,
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'OK'
+                    });
                 }else{
                     const data = e.data.data
                     console.log(data)
                     axios
-                    .put("http://localhost:5000/users/advanced/1", {first_name: firstName, last_name: lastName})
+                    .put("http://localhost:5000/users/advanced/"+id, {first_name: firstName, last_name: lastName})
                     .then((e) => {
                         if (e.status !== 200){
-                            throw Error("could not post the data")
+                            Swal.fire({
+                                title: e.response.data.message,
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK'
+                            });
                         }else{
-                            const data = e.data.data
-                            console.log(data)
-                            setFirstName("")
-                            setLastName("")
-                            setTitle("")
-                            setDescription("")
+                            Swal.fire(
+                                'Reported!',
+                                'Your report successfully sent.',
+                                'success'
+                            )
+                            .then(() => {
+                                const data = e.data.data
+                                console.log(data)
+                                setFirstName("")
+                                setLastName("")
+                                setTitle("")
+                                setDescription("")
+                            })
                         }
                     })
                     .catch(err => {
-                        if (err.name === 'AxiosError'){
-                            console.log('post aborted')
-                        }
+                        Swal.fire({
+                            title: err.response.data.message,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'OK'
+                        });
                     })
                 }
             })
             .catch(err => {
-                if (err.name === 'AxiosError'){
-                    console.log('post aborted')
-                }
+                Swal.fire({
+                    title: err.response.data.message,
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                });
             })
+        }else{
+            Swal.fire({
+                title: "All field must be filled!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
         }
     }
     

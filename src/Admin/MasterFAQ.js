@@ -8,6 +8,8 @@ import { useState } from "react";
 import useFetch from "../Tools/useFetch";
 import axios from "axios";
 
+import Swal from "sweetalert2";
+
 const MasterFAQ = () => {
     const { data } =  useFetch("http://localhost:5000/faq")
     
@@ -21,77 +23,168 @@ const MasterFAQ = () => {
         setId(data.id)
     }
 
+    const swal_error = (err) => {
+        Swal.fire({
+            title: err.response.data.message,
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK'
+        });
+    }
+
     const create = (e) => {
         e.preventDefault();
         if(question!=="" && answer!==""){
-            axios
-            .post("http://localhost:5000/faq", {question: question, answer: answer})
-            .then((e) => {
-                if (e.status !== 200){
-                    throw Error("could not post the data")
-                }else{
-                    const new_data = e.data.data
-                    console.log(new_data)
-                    setId(0)
-                    setQuestion("")
-                    setAnswer("")
-                    // To Do
-                    // auto reload new data to the table
+            
+            Swal.fire({
+                title: 'Are you sure you want to create a new FAQ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios
+                    .post("http://localhost:5000/faq", {question: question, answer: answer})
+                    .then((e) => {
+                        if (e.status !== 200){
+                            swal_error(e)
+                        }else{
+                            Swal.fire({
+                                title: 'Created!',
+                                text: 'A new FAQ has been created.',
+                                icon: 'success',
+                                confirmButtonText: 'Close',
+                            })
+                            .then(() => {
+                                const new_data = e.data.data
+                                console.log(new_data)
+                                setId(0)
+                                setQuestion("")
+                                setAnswer("")
+                                // To Do
+                                // auto reload new data to the table
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        swal_error(err)
+                    })
                 }
-            })
-            .catch(err => {
-                if (err.name === 'AxiosError'){
-                    console.log('post aborted')
-                }
-            })
+            });            
+        }else{
+            Swal.fire({
+                title: "Question and Answer must be filled!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
         }
     }
 
     const update = (e) => {
         e.preventDefault();
         if(question!=="" && answer!==""){
-            axios
-            .put("http://localhost:5000/faq/"+id, {question: question, answer: answer})
-            .then((e) => {
-                if (e.status !== 200){
-                    throw Error("could not update the data")
-                }else{
-                    const new_data = e.data.data
-                    console.log(new_data)
-                    setId(0)
-                    setQuestion("")
-                    setAnswer("")
-                    // To Do
-                    // auto reload new data to the table
+            Swal.fire({
+                title: 'Are you sure you want to update this FAQ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios
+                    .put("http://localhost:5000/faq/"+id, {question: question, answer: answer})
+                    .then((e) => {
+                        if (e.status !== 200){
+                            swal_error(e)
+                        }else{
+                            Swal.fire({
+                                title: 'Updated!',
+                                text: 'The FAQ has been updated.',
+                                icon: 'success',
+                                confirmButtonText: 'Close',
+                            })
+                            .then(() => {
+                                const new_data = e.data.data
+                                console.log(new_data)
+                                setId(0)
+                                setQuestion("")
+                                setAnswer("")
+                                // To Do
+                                // auto reload new data to the table
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        swal_error(err)
+                    })
                 }
-            })
-            .catch(err => {
-                if (err.name === 'AxiosError'){
-                    console.log('update aborted')
-                }
-            })
+            });
+        }else{
+            Swal.fire({
+                title: "Question and Answer must be filled!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
         }
     }
 
-    const deletes = (id) => {
+    const deletes = (id, state) => {
+        let states = ["",""]
         if(id!==0){
-            axios
-            .delete("http://localhost:5000/faq/"+id)
-            .then((e) => {
-                if (e.status !== 200){
-                    throw Error("could not delete the data")
-                }else{
-                    const deleted_data = e.data.data
-                    console.log(deleted_data)
-                    // To Do
-                    // auto reload data of the table
+            if(state===1){
+                states[0] = "delete";
+                states[1] = "Deleted";
+            }
+            else{
+                states[0] = "restore";
+                states[1] = "Restored";
+            }
+
+            Swal.fire({
+                title: 'Are you sure you want to '+states[0]+' this FAQ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios
+                    .delete("http://localhost:5000/faq/"+id)
+                    .then((e) => {
+                        if (e.status !== 200){
+                            swal_error(e)
+                        }else{
+                            Swal.fire({
+                                title: states[1]+'!',
+                                text: 'The FAQ has been '+states[1].toLowerCase()+'.',
+                                icon: 'success',
+                                confirmButtonText: 'Close',
+                            })
+                            .then(() => {
+                                const deleted_data = e.data.data
+                                console.log(deleted_data)
+                                // To Do
+                                // auto reload data of the table
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        swal_error(err)
+                    })
                 }
-            })
-            .catch(err => {
-                if (err.name === 'AxiosError'){
-                    console.log('delete aborted')
-                }
-            })
+            });
         }
     }
 
@@ -140,10 +233,10 @@ const MasterFAQ = () => {
                                     <td className="flex gap-2 p-1">
                                         <ActionButton text="Details" icon={faInfoCircle} handleClick={() => openDetails(FAQ)} />
                                         {!FAQ.deleted_at && 
-                                            <ActionButton text="Delete" icon={faTrashAlt} handleClick={() => deletes(FAQ.id)} />
+                                            <ActionButton text="Delete" icon={faTrashAlt} handleClick={() => deletes(FAQ.id, 1)} />
                                         }
                                         {FAQ.deleted_at && 
-                                            <ActionButton text="Restore" icon={faRefresh} handleClick={() => deletes(FAQ.id)} />
+                                            <ActionButton text="Restore" icon={faRefresh} handleClick={() => deletes(FAQ.id, 0)} />
                                         }
                                     </td>
                                 </tr>

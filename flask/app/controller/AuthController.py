@@ -25,7 +25,7 @@ def login():
         user = Users.query.filter_by(username=username).first()
         
         if not user:
-            return response.badRequest({}, "tidak ada data user")
+            return response.badRequest({}, "Tidak ada data user")
         
         if user.deleted_at!=None:
             return response.badRequest({}, "Anda di banned!")

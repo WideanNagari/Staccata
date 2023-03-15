@@ -8,6 +8,7 @@ import { faInfoCircle, faExclamationCircle, faXmark, faRefresh } from '@fortawes
 import useFetch from "../Tools/useFetch";
 import { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const MasterUser = () => {
     const { data } =  useFetch("http://localhost:5000/users")
@@ -21,6 +22,16 @@ const MasterUser = () => {
     const [ joined, setJoined ] = useState("")
     
     // const user_login = ReactSession.get("user_login");
+
+    const swal_error = (err) => {
+        Swal.fire({
+            title: err.response.data.message,
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK'
+        });
+    }
 
     const openDetails = (data) => {
         let join = data.created_at.split(' ')
@@ -42,25 +53,53 @@ const MasterUser = () => {
         setOpenModal(false)
     }
 
-    const ban = (id) => {
+    const ban = (id, state) => {
+        let states = ["",""]
         if(id!==0){
-            axios
-            .delete("http://localhost:5000/users/"+id)
-            .then((e) => {
-                if (e.status !== 200){
-                    throw Error("could not delete the data")
-                }else{
-                    const deleted_data = e.data.data
-                    console.log(deleted_data)
-                    // To Do
-                    // auto reload data of the table
+            if(state===1){
+                states[0] = "ban";
+                states[1] = "Banned";
+            }
+            else{
+                states[0] = "unban";
+                states[1] = "Unbanned";
+            }
+            
+            Swal.fire({
+                title: 'Are you sure you want to '+states[0]+' this user?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios
+                    .delete("http://localhost:5000/users/"+id)
+                    .then((e) => {
+                        if (e.status !== 200){
+                            swal_error(e)
+                        }else{
+                            Swal.fire({
+                                title: states[1]+'!',
+                                text: 'The user has been '+states[1].toLowerCase()+'.',
+                                icon: 'success',
+                                confirmButtonText: 'Close',
+                            })
+                            .then(() => {
+                                const deleted_data = e.data.data
+                                console.log(deleted_data)
+                                // To Do
+                                // auto reload data of the table
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        swal_error(err)
+                    })
                 }
-            })
-            .catch(err => {
-                if (err.name === 'AxiosError'){
-                    console.log('delete aborted')
-                }
-            })
+            });
         }
     }
 
@@ -91,10 +130,10 @@ const MasterUser = () => {
                                     <td className="flex gap-2 p-1">
                                         <ActionButton text="Details" icon={faInfoCircle} handleClick={() => openDetails(user)} />
                                         {!user.deleted_at && 
-                                            <ActionButton text="Ban" icon={faExclamationCircle} handleClick={() => ban(user.id)} />
+                                            <ActionButton text="Ban" icon={faExclamationCircle} handleClick={() => ban(user.id, 1)} />
                                         }
                                         {user.deleted_at && 
-                                            <ActionButton text="Unban" icon={faRefresh} handleClick={() => ban(user.id)} />
+                                            <ActionButton text="Unban" icon={faRefresh} handleClick={() => ban(user.id, 0)} />
                                         }
                                     </td>
                                 </tr>

@@ -2,13 +2,12 @@ import InputText from "../Components/InputText";
 import Button from "../Components/Button";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { ReactSession } from 'react-client-session';
 
-import axios from "axios"
+import Swal from "sweetalert2";
+// import withReactContent from "sweetalert2-react-content"
+import axios from "axios";
 
 const Login = () => {
-    ReactSession.setStoreType("localStorage");
-
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [remember, setRemember] = useState(true)
@@ -16,27 +15,57 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios
-        .post("http://localhost:5000/login", {username: username, password: password})
-        .then((e) => {
-            if (e.status !== 200){
-                throw Error("could not post the data")
-            }else{
-                const data = e.data.data.data
-                const level = data.level
-                if(remember){
-
+        if(username!=="" && password!==""){
+            axios
+            .post("http://localhost:5000/login", {username: username, password: password})
+            .then((e) => {
+                if (e.status !== 200){
+                    Swal.fire({
+                        title: e.response.data.message,
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'OK'
+                    });
+                    // throw Error("could not post the data")
+                }else{
+                    const data = e.data.data.data
+                    const level = data.level
+                    if(remember){
+    
+                    }
+                    // ReactSession.set("user_login", data);
+                    if(level===0) history.push('/user')
+                    else if(level===1) history.push('/admin')
                 }
-                ReactSession.set("user_login", data);
-                if(level===0) history.push('/user')
-                else if(level===1) history.push('/admin')
-            }
-        })
-        .catch(err => {
-            if (err.name === 'AxiosError'){
-                console.log('post aborted')
-            }
-        })
+            })
+            .catch(err => {
+                Swal.fire({
+                    title: err.response.data.message,
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                });
+                // if (err.name === 'AxiosError'){
+                //     console.log('post aborted')
+                // }
+            })
+        }
+        else{
+            Swal.fire({
+                title: "Username and Password must be filled!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
+            // Swal.fire({
+            //     title: 'Example',
+            //     text: 'Swal injected',
+            //     icon: 'success',
+            // });
+        }
     }
 
     const rememberChanged = () => {
