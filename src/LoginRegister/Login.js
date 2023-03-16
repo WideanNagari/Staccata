@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 
 const Login = () => {
-    const [cookies, setCookie] = useCookies(['user_login']);
+    const [cookies, setCookie, removeCookie] = useCookies(['user_login']);
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [remember, setRemember] = useState(true)
@@ -37,14 +37,17 @@ const Login = () => {
                 }else{
                     const data = e.data.data.data
                     const level = data.level
-                    setCookie('user_login', data);
+                    setCookie('user_login', data, {
+                        "path": "/"
+                    });
+                    removeCookie('active_page')
                     
                     if(level===0) history.push('/')
                     else if(level===1) history.push('/admin')
                 }
             })
             .catch(err => {
-                swal_error(e)
+                swal_error(err)
                 // if (err.name === 'AxiosError'){
                 //     console.log('post aborted')
                 // }

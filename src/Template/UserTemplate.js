@@ -32,7 +32,9 @@ const UserTemplate = () => {
     
     const menuOnClick = (name) => {
         setActive(name);
-        setCookie('active_page', name);
+        setCookie('active_page', name, {
+            "path": "/"
+        });
     }
 
     const logout = () => {
@@ -48,7 +50,7 @@ const UserTemplate = () => {
             if (result.isConfirmed) {
                 removeCookie('user_login');
                 removeCookie('active_page');
-                history.push('/')
+                history.push('/login')
             }
         });
     }
@@ -82,9 +84,6 @@ const UserTemplate = () => {
                     </div> }
                 </div>
                 <Switch>
-                    <Route exact path="/">
-                        <Dashboard />
-                    </Route>
                     <Route path="/about">
                         <About />
                     </Route>
@@ -96,6 +95,9 @@ const UserTemplate = () => {
                     </Route>
                     <Route path="/faq">
                         <FAQ />
+                    </Route>
+                    <Route path="/">
+                        <Dashboard />
                     </Route>
                     <Route path="*">
                         <NotFound />

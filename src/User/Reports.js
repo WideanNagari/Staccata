@@ -11,8 +11,10 @@ import Swal from "sweetalert2"
 const Reports = () => {
     const [cookies, setCookie] = useCookies(['user_login']);
 
-    const nama_depan = cookies.user_login===undefined || cookies.user_login.first_name===null ? '' : cookies.user_login.first_name
-    const nama_belakang = cookies.user_login===undefined || cookies.user_login.last_name===null ? '' : cookies.user_login.last_name
+    const notLoggedIn = cookies.user_login===undefined ? true : false
+
+    const nama_depan = notLoggedIn || cookies.user_login.first_name===null ? '' : cookies.user_login.first_name
+    const nama_belakang = notLoggedIn || cookies.user_login.last_name===null ? '' : cookies.user_login.last_name
 
     const [firstName, setFirstName] = useState(nama_depan)
     const [lastName, setLastName] = useState(nama_belakang)
@@ -21,10 +23,11 @@ const Reports = () => {
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        const id = cookies.user_login.id
+        const id = cookies.user_login===undefined ? 1 : cookies.user_login.id 
+        const nama = firstName+" "+lastName
         if(firstName!=="" && lastName!=="" && title!=="" && description!==""){
             axios
-            .post("http://localhost:5000/reports", {title: title, description: description, reporter:id})
+            .post("http://localhost:5000/reports", {title: title, description: description, reporter: id, reporter_name: nama})
             .then((e) => {
                 if (e.status !== 200){
                     Swal.fire({
@@ -37,42 +40,55 @@ const Reports = () => {
                 }else{
                     // const data = e.data.data
                     // console.log(data)
-                    axios
-                    .put("http://localhost:5000/users/advanced/"+id, {first_name: firstName, last_name: lastName})
-                    .then((e) => {
-                        if (e.status !== 200){
+                    if(id!==1){
+                        axios
+                        .put("http://localhost:5000/users/advanced/"+id, {first_name: firstName, last_name: lastName})
+                        .then((e) => {
+                            if (e.status !== 200){
+                                Swal.fire({
+                                    title: e.response.data.message,
+                                    icon: 'error',
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'OK'
+                                });
+                            }else{
+                                Swal.fire(
+                                    'Reported!',
+                                    'Your report successfully sent.',
+                                    'success'
+                                )
+                                .then(() => {
+                                    // const data = e.data.data
+                                    // console.log(data)
+                                    setFirstName("")
+                                    setLastName("")
+                                    setTitle("")
+                                    setDescription("")
+                                })
+                            }
+                        })
+                        .catch(err => {
                             Swal.fire({
-                                title: e.response.data.message,
+                                title: err.response.data.message,
                                 icon: 'error',
                                 confirmButtonColor: '#3085d6',
                                 cancelButtonColor: '#d33',
                                 confirmButtonText: 'OK'
                             });
-                        }else{
-                            Swal.fire(
-                                'Reported!',
-                                'Your report successfully sent.',
-                                'success'
-                            )
-                            .then(() => {
-                                // const data = e.data.data
-                                // console.log(data)
-                                setFirstName("")
-                                setLastName("")
-                                setTitle("")
-                                setDescription("")
-                            })
-                        }
-                    })
-                    .catch(err => {
-                        Swal.fire({
-                            title: err.response.data.message,
-                            icon: 'error',
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'OK'
-                        });
-                    })
+                        })
+                    }else{
+                        Swal.fire(
+                            'Reported!',
+                            'Your report successfully sent.',
+                            'success'
+                        ).then(() => {
+                            setFirstName("")
+                            setLastName("")
+                            setTitle("")
+                            setDescription("")
+                        })
+                    }
                 }
             })
             .catch(err => {

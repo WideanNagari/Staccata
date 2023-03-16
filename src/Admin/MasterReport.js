@@ -28,11 +28,16 @@ const MasterReport = () => {
     }
     
     const openDetails = (data) => {
-        if(data.reporter.first_name===null)
-            setReporter(data.reporter.username)
+        // if(data.reporter.first_name===null)
+        //     setReporter(data.reporter.username)
+        // else
+        //     setReporter(data.reporter_name)
+
+        if(data.reporter.id===1)
+            setReporter("Guest - "+data.reporter_name) 
         else
-            setReporter(data.reporter.first_name+" "+data.reporter.last_name)
-            
+            setReporter(data.reporter_name) 
+
         setReportDate(data.created_at)
         setTitle(data.title)
         setDescription(data.description)

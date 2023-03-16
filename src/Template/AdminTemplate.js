@@ -39,7 +39,9 @@ const AdminTemplate = () => {
     
     const menuOnClick = (name) => {
         setActive(name);
-        setCookie('active_page', name);
+        setCookie('active_page', name, {
+            "path": "/"
+        });
     }
 
     const logout = () => {
@@ -55,7 +57,7 @@ const AdminTemplate = () => {
             if (result.isConfirmed) {
                 removeCookie('user_login');
                 removeCookie('active_page');
-                history.push('/')
+                history.push('/login')
             }
         });
     }
@@ -85,9 +87,6 @@ const AdminTemplate = () => {
                     </div>
                 </div>
                 <Switch>
-                    <Route exact path="/admin">
-                        <Dashboard />
-                    </Route>
                     <Route path="/admin/users">
                         <MasterUser />
                     </Route>
@@ -96,6 +95,9 @@ const AdminTemplate = () => {
                     </Route>
                     <Route path="/admin/faq">
                         <MasterFAQ />
+                    </Route>
+                    <Route path="/admin">
+                        <Dashboard />
                     </Route>
                     <Route path="*">
                         <NotFound />

@@ -13,6 +13,7 @@ def formatDataReport(data, reporter):
         'title': data.title,
         'description': data.description,
         'reporter': reporter,
+        'reporter_name': data.reporter_name,
         'created_at': data.created_at.strftime('%A, %d %B %Y %H:%M:%S'),
         'updated_at': data.updated_at.strftime('%A, %d %B %Y %H:%M:%S'),
         'deleted_at': data.deleted_at.strftime('%A, %d %B %Y %H:%M:%S') if data.deleted_at else data.deleted_at
@@ -60,11 +61,12 @@ def createReport():
         title = request.json["title"]
         description = request.json["description"]
         reporter = request.json["reporter"]
+        reporter_name = request.json["reporter_name"]
 
         if(title=="" or description=="" or reporter==""):
             return response.badRequest({}, "Mohon isi semua data!")
 
-        report = Report(title=title, description=description, reporter=int(reporter))
+        report = Report(title=title, description=description, reporter=int(reporter), reporter_name=reporter_name)
         db.session.add(report)
         db.session.commit()
 

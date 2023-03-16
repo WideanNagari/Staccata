@@ -13,6 +13,9 @@ def seed(records):
     faker = Faker()
     
     try:
+        user = Users(username="guest", email="guest@ggmail.com", password="123")
+        user.setPassword("123")
+        db.session.add(user)
         for i in range(int(records)):
             username = faker.name()
             password = "123"
