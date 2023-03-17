@@ -1,6 +1,7 @@
 from app.model.users import Users
-from app.model.faqs import FAQ
-from app.model.reports import Report
+from app.model.faq import FAQ
+from app.model.reports import Reports
+from app.model.performances import Performances
 
 from app import app, db
 from app.model import response
@@ -47,8 +48,16 @@ def seed(records):
             description = faker.sentence()
             reporter = random.choice(arr_id)
 
-            report = Report(title=title, description=description, reporter=reporter)
+            report = Reports(title=title, description=description, reporter=reporter)
             db.session.add(report)
+        db.session.commit()
+
+        for i in range(int(records)):
+            like_status = random.randint(0, 1)
+            u = random.choice(arr_id)
+
+            performance = Performances(user=u, like_status=like_status)
+            db.session.add(performance)
         db.session.commit()
 
         return response.success({}, "success")

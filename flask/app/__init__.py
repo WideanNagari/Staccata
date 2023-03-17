@@ -18,5 +18,5 @@ Migrate = Migrate(app, db)
 
 jwt = JWTManager(app)
 
-from app.model import faqs, reports, users
+from app.model import faq, reports, users, performances
 from app import routes

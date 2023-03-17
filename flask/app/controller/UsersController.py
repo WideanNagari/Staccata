@@ -94,7 +94,8 @@ def updateUser(id):
         user.email = email
         # user.password = password
         user.setPassword(password)
-        
+        user.updated_at = datetime.now()
+
         db.session.commit()
 
         return response.success(formatDataUser(user), "Sukses update data user")

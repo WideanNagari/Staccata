@@ -1,4 +1,4 @@
-from app.model.faqs import FAQ
+from app.model.faq import FAQ
 
 from app import app, db
 from app.model import response

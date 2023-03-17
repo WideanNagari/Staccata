@@ -1,4 +1,4 @@
-from app.model.reports import Report
+from app.model.reports import Reports
 from app.model.users import Users
 from app.controller.UsersController import formatDataUser
 
@@ -31,7 +31,7 @@ def formatArrayReport(data):
 @app.route('/reports', methods=['GET'])
 def getAllReport():
     try:
-        report = Report.query.all()
+        report = Reports.query.all()
 
         data = formatArrayReport(report)
 
@@ -42,7 +42,7 @@ def getAllReport():
 @app.route('/reports/<id>', methods=['GET'])
 def getOneReport(id):
     try: 
-        report = Report.query.filter_by(id=id).first()
+        report = Reports.query.filter_by(id=id).first()
 
         if not report:
             return response.badRequest({}, "tidak ada data report")
@@ -66,7 +66,7 @@ def createReport():
         if(title=="" or description=="" or reporter==""):
             return response.badRequest({}, "Mohon isi semua data!")
 
-        report = Report(title=title, description=description, reporter=int(reporter), reporter_name=reporter_name)
+        report = Reports(title=title, description=description, reporter=int(reporter), reporter_name=reporter_name)
         db.session.add(report)
         db.session.commit()
 
@@ -85,7 +85,7 @@ def updateReport(id):
         description = request.json["description"]
         reporter = request.json["reporter"]
 
-        report = Report.query.filter_by(id=id).filter(Report.deleted_at==None).first()
+        report = Reports.query.filter_by(id=id).filter(Reports.deleted_at==None).first()
         
         if not report:
             return response.badRequest({}, "tidak ada data report")
@@ -108,7 +108,7 @@ def updateReport(id):
 @app.route('/reports/<id>', methods=['DELETE'])
 def deleteReport(id):
     try:
-        report = Report.query.filter_by(id=id).first()
+        report = Reports.query.filter_by(id=id).first()
         
         if not report:
             return response.badRequest({}, "tidak ada data report")

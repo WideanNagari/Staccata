@@ -5,9 +5,11 @@ const LightButton = (props) => {
     const icon = props.icon;
     const addedClass = props.addedClass
     const color = props.color
+    const handleClick = props.handleClick
 
     return (
-        <button className={`py-1 rounded-lg bg-primary-900 text-primary text-lg hover:bg-primary-800 duration-100 ${addedClass}`}>
+        <button className={`py-1 rounded-lg bg-primary-900 text-primary text-lg hover:bg-primary-800 duration-100 ${addedClass}`}
+                onClick={handleClick}>
             <FontAwesomeIcon icon={icon} size="lg" color={color} fixedWidth/>
             <span className="ml-2 text-primary-100">{text}</span>
         </button>
