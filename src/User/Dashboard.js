@@ -3,12 +3,14 @@ import LightButton from '../Components/User/LightButton';
 import { faMagnifyingGlass, faPlay, faThumbsUp, faThumbsDown, faDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-// import axios from 'axios';
+import axios from 'axios';
 import Swal from "sweetalert2";
 
 import { useState } from "react";
+import { useCookies } from 'react-cookie';
 
 const UserDashboard = () => {
+    const [cookies, setCookie] = useCookies(['user_login']);
     const [title, setTitle] = useState('-');
     const [initial, setInitial] = useState('Piano');
     const [target, setTarget] = useState('Guitar');
@@ -28,6 +30,16 @@ const UserDashboard = () => {
     //         confirmButtonText: 'OK'
     //     });
     // }
+
+    const swal_error = (err) => {
+        Swal.fire({
+            title: err.response.data.message,
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK'
+        });
+    }
 
     const startConvert = () => {
         setConverting(true)
@@ -52,22 +64,48 @@ const UserDashboard = () => {
     }
 
     const like = () => {
-        Swal.fire(
-            'Liked!',
-            'Thank you for your vote.',
-            'success'
-        ).then(() => {
-            setVoted(true)
+        const id = cookies.user_login===undefined ? 1 : cookies.user_login.id
+        const convert_id = 1
+        axios
+        .put("http://localhost:5000/performances/vote/"+convert_id, {vote: 1})
+        .then((e) => {
+            if (e.status !== 200){
+                swal_error(e)
+            }else{
+                Swal.fire(
+                    'Liked!',
+                    'Thank you for your vote.',
+                    'success'
+                ).then(() => {
+                    setVoted(true)
+                })
+            }
+        })
+        .catch(err => {
+            swal_error(err)
         })
     }
 
     const dislike = () => {
-        Swal.fire(
-            'Disliked!',
-            'Thank you for your vote.',
-            'success'
-        ).then(() => {
-            setVoted(true)
+        const id = cookies.user_login===undefined ? 1 : cookies.user_login.id 
+        const convert_id = 1
+        axios
+        .put("http://localhost:5000/performances/vote/"+convert_id, {vote: 0})
+        .then((e) => {
+            if (e.status !== 200){
+                swal_error(e)
+            }else{
+                Swal.fire(
+                    'Disliked!',
+                    'Thank you for your vote.',
+                    'success'
+                ).then(() => {
+                    setVoted(true)
+                })
+            }
+        })
+        .catch(err => {
+            swal_error(err)
         })
     }
     

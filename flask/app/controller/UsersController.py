@@ -52,6 +52,18 @@ def getOneUser(id):
     except Exception as e:
         return response.badRequest({}, str(e))
     
+@app.route('/users/summary', methods=['GET'])
+def getUserSummary():
+    try: 
+        users = len(Users.query.all())
+        
+        return response.success({
+            "user_count": users
+        }, "success")
+
+    except Exception as e:
+        return response.badRequest({}, str(e))
+    
 @app.route('/users', methods=['POST'])
 def createUser():
     try:

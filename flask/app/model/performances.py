@@ -4,11 +4,18 @@ from app.model.users import Users
 
 class Performances(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(255), nullable=False)
+    initial = db.Column(db.String(6), nullable=False)
+    target = db.Column(db.String(6), nullable=False)
     user = db.Column(db.Integer, db.ForeignKey(Users.id))
-    like_status = db.Column(db.Integer, nullable=False, default=1)
+    duration = db.Column(db.Integer, nullable=False)
+    accuracy = db.Column(db.Float, nullable=False)
+    loss = db.Column(db.Float, nullable=False)
+    like_status = db.Column(db.Integer, nullable=True)
+    user = db.Column(db.Integer, db.ForeignKey(Users.id))
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now)
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
-        return '<Performances {}>'.format(self.like_status)
+        return '<Performances {}>'.format(self.title)

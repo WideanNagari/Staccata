@@ -2,13 +2,14 @@ import Dashboard from '../Admin/Dashboard'
 import MasterUser from '../Admin/MasterUser'
 import MasterReport from '../Admin/MasterReport'
 import MasterFAQ from '../Admin/MasterFAQ'
+import MasterPerformances from '../Admin/MasterPerformances'
 
 import NotFound from '../Etc/NotFound'
 
 import NavButtonAdmin from '../Components/Admin/NavButtonAdmin'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHouse, faUser, faComments, faQuestionCircle, faSignOut } from '@fortawesome/free-solid-svg-icons'
+import { faHouse, faUser, faComments, faQuestionCircle, faMusic, faSignOut } from '@fortawesome/free-solid-svg-icons'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { useState } from "react";
 import { useCookies } from 'react-cookie';
@@ -73,7 +74,7 @@ const AdminTemplate = () => {
                     <NavButtonAdmin active={active} name="User" to="/admin/users" icon={faUser} clickHandler={menuOnClick}/>
                     <NavButtonAdmin active={active} name="User Reports" to="/admin/reports" icon={faComments} clickHandler={menuOnClick}/>
                     <NavButtonAdmin active={active} name="FAQ" to="/admin/faq" icon={faQuestionCircle} clickHandler={menuOnClick}/>
-                    <NavButtonAdmin active={active} name="???" to="/admin" icon={faHouse} clickHandler={menuOnClick}/>
+                    <NavButtonAdmin active={active} name="Performance" to="/admin/Performance" icon={faMusic} clickHandler={menuOnClick}/>
 
                     <div className="w-full border-b-2 border-primary-100 mb-2"></div>
                     
@@ -95,6 +96,9 @@ const AdminTemplate = () => {
                     </Route>
                     <Route path="/admin/faq">
                         <MasterFAQ />
+                    </Route>
+                    <Route path="/admin/performance">
+                        <MasterPerformances />
                     </Route>
                     <Route path="/admin">
                         <Dashboard />

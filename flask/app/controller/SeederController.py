@@ -52,11 +52,19 @@ def seed(records):
             db.session.add(report)
         db.session.commit()
 
+        arr_music = ["Piano", "Guitar"]
         for i in range(int(records)):
             like_status = random.randint(0, 1)
             u = random.choice(arr_id)
+            title2 = faker.sentence()
+            duration = random.randint(10, 200)
+            initial = random.randint(0, 1)
+            target = int(not initial)
+            accuracy = random.uniform(50.0, 100.0)
+            loss = random.uniform(50.0, 100.0)
 
-            performance = Performances(user=u, like_status=like_status)
+            performance = Performances(user=u, title=title2, duration=duration, initial=arr_music[initial], target=arr_music[target], 
+                                        accuracy=accuracy, loss=loss, like_status=like_status)
             db.session.add(performance)
         db.session.commit()
 

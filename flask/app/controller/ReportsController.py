@@ -55,6 +55,18 @@ def getOneReport(id):
     except Exception as e:
         return response.badRequest({}, str(e))
     
+@app.route('/reports/summary', methods=['GET'])
+def getReportSummary():
+    try: 
+        reports = len(Reports.query.all())
+        
+        return response.success({
+            "report_count": reports
+        }, "success")
+
+    except Exception as e:
+        return response.badRequest({}, str(e))
+    
 @app.route('/reports', methods=['POST'])
 def createReport():
     try:

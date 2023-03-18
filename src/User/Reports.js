@@ -21,6 +21,16 @@ const Reports = () => {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     
+    const swal_error = (err) => {
+        Swal.fire({
+            title: err.response.data.message,
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK'
+        });
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const id = cookies.user_login===undefined ? 1 : cookies.user_login.id 
@@ -30,13 +40,7 @@ const Reports = () => {
             .post("http://localhost:5000/reports", {title: title, description: description, reporter: id, reporter_name: nama})
             .then((e) => {
                 if (e.status !== 200){
-                    Swal.fire({
-                        title: e.response.data.message,
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'OK'
-                    });
+                    swal_error(e)
                 }else{
                     // const data = e.data.data
                     // console.log(data)
@@ -45,13 +49,7 @@ const Reports = () => {
                         .put("http://localhost:5000/users/advanced/"+id, {first_name: firstName, last_name: lastName})
                         .then((e) => {
                             if (e.status !== 200){
-                                Swal.fire({
-                                    title: e.response.data.message,
-                                    icon: 'error',
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
-                                    confirmButtonText: 'OK'
-                                });
+                                swal_error(e)
                             }else{
                                 Swal.fire(
                                     'Reported!',
@@ -69,13 +67,7 @@ const Reports = () => {
                             }
                         })
                         .catch(err => {
-                            Swal.fire({
-                                title: err.response.data.message,
-                                icon: 'error',
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'OK'
-                            });
+                            swal_error(err)
                         })
                     }else{
                         Swal.fire(
@@ -92,13 +84,7 @@ const Reports = () => {
                 }
             })
             .catch(err => {
-                Swal.fire({
-                    title: err.response.data.message,
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'OK'
-                });
+                swal_error(err)
             })
         }else{
             Swal.fire({

@@ -10,7 +10,13 @@ from datetime import datetime
 def formatDataPerformance(data, user):
     data = {
         'id': data.id,
+        'title': data.title,
+        'initial': data.initial,
+        'target': data.target,
         'user': user,
+        'duration': data.duration,
+        'accuracy': data.accuracy,
+        'loss': data.loss,
         'like_status': data.like_status,
         'created_at': data.created_at.strftime('%A, %d %B %Y %H:%M:%S'),
         'updated_at': data.updated_at.strftime('%A, %d %B %Y %H:%M:%S'),
@@ -42,10 +48,12 @@ def getPerformanceSummary():
     try: 
         like = Performances.query.filter_by(like_status=1).count()
         dislike = Performances.query.filter_by(like_status=0).count()
+        songs = len(Performances.query.all())
         
         return response.success({
             "like": like,
-            "dislike": dislike
+            "dislike": dislike,
+            "converted": songs
         }, "success")
 
     except Exception as e:
@@ -71,16 +79,21 @@ def getOnePerformance(id):
 def createPerformance():
     try:
         user = request.json["user"]
-        like_status = request.json["like_status"]
+        title = request.json["title"]
+        initial = request.json["initial"]
+        target = request.json["target"]
+        duration = request.json["duration"]
+        accuracy = request.json["accuracy"]
+        loss = request.json["loss"]
 
-        performance = Performances(user=user, like_status=like_status)
+        performance = Performances(user=user, title=title, initial=initial, target=target, duration=duration, accuracy=accuracy, loss=loss)
         db.session.add(performance)
         db.session.commit()
 
         user = Users.query.filter_by(id=performance.user).first()
         data_user = formatDataUser(user)
 
-        return response.success(formatDataPerformance(performance, data_user), "Sukses menambah data performance")
+        return response.success(formatDataPerformance(performance, data_user), "Add performance data success")
     
     except Exception as e:
         return response.badRequest({}, str(e))
@@ -89,14 +102,24 @@ def createPerformance():
 def updatePerformance(id):
     try:
         user = request.json["user"]
-        like_status = request.json["like_status"]
+        title = request.json["title"]
+        initial = request.json["initial"]
+        target = request.json["target"]
+        duration = request.json["duration"]
+        accuracy = request.json["accuracy"]
+        loss = request.json["loss"]
 
         performance = Performances.query.filter_by(id=id).filter(Performances.deleted_at==None).first()
         
         if not performance:
             return response.badRequest({}, "tidak ada data performance")
 
-        performance.like_status = like_status
+        performance.title = title
+        performance.initial = initial
+        performance.target = target
+        performance.duration = duration
+        performance.accuracy = accuracy
+        performance.loss = loss
         performance.updated_at = datetime.now()
         
         db.session.commit()
@@ -104,7 +127,7 @@ def updatePerformance(id):
         user = Users.query.filter_by(id=performance.user).first()
         data_user = formatDataUser(user)
 
-        return response.success(formatDataPerformance(performance, data_user), "Sukses update data performance")
+        return response.success(formatDataPerformance(performance, data_user), "Update performance data success")
     
     except Exception as e:
         return response.badRequest({}, str(e))
@@ -127,8 +150,30 @@ def deletePerformance(id):
         user = Users.query.filter_by(id=performance.user).first()
         data_user = formatDataUser(user)
 
-        return response.success(formatDataPerformance(performance, data_user), "Sukses hapus data performance")
+        return response.success(formatDataPerformance(performance, data_user), "Delete performance data success")
     
     except Exception as e:
         return response.badRequest({}, str(e))
             
+@app.route('/performances/vote/<id>', methods=['PUT'])
+def votePerformance(id):
+    try:
+        vote = request.json["vote"]
+
+        performance = Performances.query.filter_by(id=id).filter(Performances.deleted_at==None).first()
+        
+        if not performance:
+            return response.badRequest({}, "tidak ada data performance")
+
+        performance.like_status = vote
+        performance.updated_at = datetime.now()
+        
+        db.session.commit()
+
+        user = Users.query.filter_by(id=performance.user).first()
+        data_user = formatDataUser(user)
+
+        return response.success(formatDataPerformance(performance, data_user), "Performance vote success")
+    
+    except Exception as e:
+        return response.badRequest({}, str(e))
