@@ -5,13 +5,15 @@ import ActionButton from "../Components/Admin/ActionButton";
 import { faInfoCircle, faExclamationCircle, faXmark, faRefresh } from '@fortawesome/free-solid-svg-icons'
 
 // import { ReactSession } from 'react-client-session';
-import useFetch from "../Tools/useFetch";
-import { useState } from "react";
+// import useFetch from "../Tools/useFetch";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const MasterUser = () => {
-    const { data } =  useFetch("http://localhost:5000/users")
+    // let { data } =  useFetch("http://localhost:5000/users")
+    const [ dataUser, setDataUser ] = useState(null)
+    const [ dataView, setDataView ] = useState(null)
     const [ isOpenModal, setOpenModal ] = useState(false)
 
     const [ username, setUsername ] = useState("")
@@ -20,6 +22,7 @@ const MasterUser = () => {
     const [ converted, setConverted ] = useState("")
     const [ reportSent, setReportSent ] = useState("")
     const [ joined, setJoined ] = useState("")
+    const [ changer, setChanger ] = useState(false)
     
     // const user_login = ReactSession.get("user_login");
 
@@ -31,6 +34,11 @@ const MasterUser = () => {
             cancelButtonColor: '#d33',
             confirmButtonText: 'OK'
         });
+    }
+
+    const inputChange = (name) => {
+        const newUsers = dataUser.filter(user => user.username.toLowerCase().search(name.toLowerCase()) !== -1)
+        setDataView(newUsers)
     }
 
     const openDetails = (data) => {
@@ -88,10 +96,7 @@ const MasterUser = () => {
                                 confirmButtonText: 'Close',
                             })
                             .then(() => {
-                                const deleted_data = e.data.data
-                                console.log(deleted_data)
-                                // To Do
-                                // auto reload data of the table
+                                setChanger(!changer)
                             })
                         }
                     })
@@ -103,11 +108,23 @@ const MasterUser = () => {
         }
     }
 
+    useEffect(() => {
+        axios
+        .get("http://localhost:5000/users")
+        .then(res => {
+            if (res.status !== 200) swal_error(res);
+            else{
+                setDataUser(res.data.data)
+                setDataView(res.data.data)
+            }
+        }).catch(err => { swal_error(err) })
+    }, [changer])
+
     return (
         <div className="admin-master-user flex flex-col w-4/5 p-6 w-full h-full">
             <PageTitle title="Master User" />
             <div className="w-full flex-grow bg-primary-400 rounded-lg p-5">
-                <SearchBox text="Search Username"/>
+                <SearchBox text="Search Username" handleChange={(e) => inputChange(e.target.value)}/>
 
                 <div className="overflow-auto w-full h-auto max-h-[30rem] scrollbar-hide rounded-lg shadow-xl">
                     <table className="table-fixed w-full font-semibold">
@@ -120,8 +137,8 @@ const MasterUser = () => {
                                 <th className="w-3/12">Action</th>
                             </tr>
                         </thead>
-                        {data!=null ? <tbody>
-                            {data.data.map((user) => (
+                        {dataView!=null ? <tbody>
+                            {dataView.map((user) => (
                                 <tr className="text-center odd:bg-primary-700 even:bg-primary-800" key={user.id}>
                                     <td>{user.email}</td>
                                     <td>{user.username}</td>

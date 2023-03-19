@@ -16,9 +16,11 @@ def seed(records):
     try:
         user = Users(username="guest", email="guest@ggmail.com", password="123")
         user.setPassword("123")
+        arr_username = []
+        arr_username.append("guest")
         db.session.add(user)
         for i in range(int(records)):
-            username = faker.name()
+            username = faker.user_name()
             password = "123"
             email = (username.split()[0])+"@ggmail.com"
             piano = random.randint(0, 10)
@@ -28,6 +30,8 @@ def seed(records):
             user = Users(username=username, email=email, password=password, file_converted_piano=piano, file_converted_guitar=guitar, report_sent=report)
             user.setPassword(password)
             db.session.add(user)
+            arr_username.append(username)
+
         db.session.commit()
 
         for i in range(int(records)):
@@ -46,9 +50,9 @@ def seed(records):
         for i in range(int(records)):
             title = faker.sentence()
             description = faker.sentence()
-            reporter = random.choice(arr_id)
-
-            report = Reports(title=title, description=description, reporter=reporter)
+            reporter = random.randint(0, len(arr_id)-1)
+            
+            report = Reports(title=title, description=description, reporter=arr_id[reporter], reporter_name=arr_username[reporter])
             db.session.add(report)
         db.session.commit()
 

@@ -5,13 +5,16 @@ import ActionButton from "../Components/Admin/ActionButton";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle, faTrashAlt, faXmark, faRefresh, faCheck, faTimes, faMinus } from '@fortawesome/free-solid-svg-icons'
 import useFetch from "../Tools/useFetch";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 
 const MasterReport = () => {
-    const { data } =  useFetch("http://localhost:5000/performances")
+    // const { data } =  useFetch("http://localhost:5000/performances")
+    
+    const [ dataPerform, setDataPerform ] = useState(null)
+    const [ dataView, setDataView ] = useState(null)
     const [ isOpenModal, setOpenModal ] = useState(false)
 
     const [ title, setTitle ] = useState("")
@@ -23,6 +26,16 @@ const MasterReport = () => {
     const [ loss, setLoss ] = useState(0)
     const [ liked, setLiked ] = useState("")
     const [ convert_date, setConvertDate ] = useState("")
+    const [ changer, setChanger ] = useState(false)
+
+    const inputChange = (key) => {
+        const newPerform = dataPerform.filter(performance => 
+                                                performance.title.toLowerCase().search(key.toLowerCase()) !== -1 ||
+                                                performance.target.toLowerCase().search(key.toLowerCase()) !== -1 ||
+                                                performance.user.username.toLowerCase().search(key.toLowerCase()) !== -1
+                                            )
+        setDataView(newPerform)
+    }
 
     const swal_error = (err) => {
         Swal.fire({
@@ -108,10 +121,7 @@ const MasterReport = () => {
                                 confirmButtonText: 'Close',
                             })
                             .then(() => {
-                                const deleted_data = e.data.data
-                                console.log(deleted_data)
-                                // To Do
-                                // auto reload data of the table
+                                setChanger(!changer)
                             })
                         }
                     })
@@ -122,12 +132,24 @@ const MasterReport = () => {
             });
         }
     }
+
+    useEffect(() => {
+        axios
+        .get("http://localhost:5000/performances")
+        .then(res => {
+            if (res.status !== 200) swal_error(res);
+            else{
+                setDataPerform(res.data.data)
+                setDataView(res.data.data)
+            }
+        }).catch(err => { swal_error(err) })
+    }, [changer])
     
     return (
         <div className="admin-master-report flex flex-col w-4/5 p-6 w-full h-full">
             <PageTitle title="Master Performance" />
             <div className="w-full flex-grow bg-primary-400 rounded-lg p-5">
-                <SearchBox text="Search Performance"/>
+                <SearchBox text="Search Performance" handleChange={(e) => inputChange(e.target.value)}/>
 
                 <div className="overflow-auto w-full h-auto max-h-[30rem] scrollbar-hide rounded-lg shadow-xl">
                     <table className="table-fixed w-full font-semibold">
@@ -142,8 +164,8 @@ const MasterReport = () => {
                                 <th className="w-3/12">Action</th>
                             </tr>
                         </thead>
-                        {data!=null ? <tbody>
-                            {data.data.map((performance) => (
+                        {dataView!=null ? <tbody>
+                            {dataView.map((performance) => (
                                 <tr className="text-center odd:bg-primary-700 even:bg-primary-800" key={performance.id}>
                                     <td>{performance.id}</td>
                                     <td>{performance.user.username}</td>

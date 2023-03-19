@@ -4,18 +4,31 @@ import ActionButton from "../Components/Admin/ActionButton";
 
 import { faInfoCircle, faTrashAlt, faXmark, faRefresh } from '@fortawesome/free-solid-svg-icons'
 import useFetch from "../Tools/useFetch";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const MasterReport = () => {
-    const { data } =  useFetch("http://localhost:5000/reports")
+    // const { data } =  useFetch("http://localhost:5000/reports")
+    
+    const [ dataReport,setDataReport ] = useState(null)
+    const [ dataView, setDataView ] = useState(null)
     const [ isOpenModal, setOpenModal ] = useState(false)
 
     const [ reporter, setReporter ] = useState("")
     const [ report_date, setReportDate ] = useState("")
     const [ title, setTitle ] = useState("")
     const [ description, setDescription ] = useState("")
+    const [ changer, setChanger ] = useState(false)
+
+    const inputChange = (key) => {
+        const newReport = dataReport.filter(report => 
+                                                report.reporter_name.toLowerCase().search(key.toLowerCase()) !== -1 ||
+                                                report.title.toLowerCase().search(key.toLowerCase()) !== -1 ||
+                                                report.description.toLowerCase().search(key.toLowerCase()) !== -1
+                                            )
+        setDataView(newReport)
+    }
 
     const swal_error = (err) => {
         Swal.fire({
@@ -87,10 +100,7 @@ const MasterReport = () => {
                                 confirmButtonText: 'Close',
                             })
                             .then(() => {
-                                const deleted_data = e.data.data
-                                console.log(deleted_data)
-                                // To Do
-                                // auto reload data of the table
+                                setChanger(!changer)
                             })
                         }
                     })
@@ -101,12 +111,24 @@ const MasterReport = () => {
             });
         }
     }
+
+    useEffect(() => {
+        axios
+        .get("http://localhost:5000/reports")
+        .then(res => {
+            if (res.status !== 200) swal_error(res);
+            else{
+                setDataReport(res.data.data)
+                setDataView(res.data.data)
+            }
+        }).catch(err => { swal_error(err) })
+    }, [changer])
     
     return (
         <div className="admin-master-report flex flex-col w-4/5 p-6 w-full h-full">
             <PageTitle title="Master Report" />
             <div className="w-full flex-grow bg-primary-400 rounded-lg p-5">
-                <SearchBox text="Search Report"/>
+                <SearchBox text="Search Report" handleChange={(e) => inputChange(e.target.value)}/>
 
                 <div className="overflow-auto w-full h-auto max-h-[30rem] scrollbar-hide rounded-lg shadow-xl">
                     <table className="table-fixed w-full font-semibold">
@@ -119,11 +141,11 @@ const MasterReport = () => {
                                 <th className="w-3/12">Action</th>
                             </tr>
                         </thead>
-                        {data!=null ? <tbody>
-                            {data.data.map((report) => (
+                        {dataView!=null ? <tbody>
+                            {dataView.map((report) => (
                                 <tr className="text-center odd:bg-primary-700 even:bg-primary-800" key={report.id}>
                                     <td>{report.id}</td>
-                                    <td>{report.reporter.username}</td>
+                                    <td>{report.reporter_name}</td>
                                     <td className="truncate">{report.title}</td>
                                     <td className="truncate">{report.description}</td>
                                     <td className="flex gap-2 p-1">

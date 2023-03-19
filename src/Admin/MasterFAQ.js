@@ -4,18 +4,29 @@ import ActionButton from "../Components/Admin/ActionButton";
 
 import { faInfoCircle, faTrashAlt, faAdd, faSave, faRefresh } from '@fortawesome/free-solid-svg-icons'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useFetch from "../Tools/useFetch";
 import axios from "axios";
 
 import Swal from "sweetalert2";
 
 const MasterFAQ = () => {
-    const { data } =  useFetch("http://localhost:5000/faq")
+    // const { data } =  useFetch("http://localhost:5000/faq")
     
+    const [ dataFAQ, setDataFAQ ] = useState(null)
+    const [ dataView, setDataView ] = useState(null)
     const [ question, setQuestion ] = useState("")
     const [ answer, setAnswer ] = useState("")
     const [ id, setId ] = useState(0)
+    const [ changer, setChanger ] = useState(false)
+
+    const inputChange = (key) => {
+        const newFAQ = dataFAQ.filter(faq => 
+                                        faq.question.toLowerCase().search(key.toLowerCase()) !== -1 ||
+                                        faq.answer.toLowerCase().search(key.toLowerCase()) !== -1
+                                    )
+        setDataView(newFAQ)
+    }
 
     const openDetails = (data) => {
         setAnswer(data.answer)
@@ -60,13 +71,10 @@ const MasterFAQ = () => {
                                 confirmButtonText: 'Close',
                             })
                             .then(() => {
-                                const new_data = e.data.data
-                                console.log(new_data)
+                                setChanger(!changer)
                                 setId(0)
                                 setQuestion("")
                                 setAnswer("")
-                                // To Do
-                                // auto reload new data to the table
                             })
                         }
                     })
@@ -112,13 +120,10 @@ const MasterFAQ = () => {
                                 confirmButtonText: 'Close',
                             })
                             .then(() => {
-                                const new_data = e.data.data
-                                console.log(new_data)
+                                setChanger(!changer)
                                 setId(0)
                                 setQuestion("")
                                 setAnswer("")
-                                // To Do
-                                // auto reload new data to the table
                             })
                         }
                     })
@@ -173,10 +178,11 @@ const MasterFAQ = () => {
                                 confirmButtonText: 'Close',
                             })
                             .then(() => {
-                                const deleted_data = e.data.data
-                                console.log(deleted_data)
+                                // const deleted_data = e.data.data
+                                // console.log(deleted_data)
                                 // To Do
                                 // auto reload data of the table
+                                setChanger(!changer)
                             })
                         }
                     })
@@ -187,6 +193,18 @@ const MasterFAQ = () => {
             });
         }
     }
+
+    useEffect(() => {
+        axios
+        .get("http://localhost:5000/faq")
+        .then(res => {
+            if (res.status !== 200) swal_error(res);
+            else{
+                setDataFAQ(res.data.data)
+                setDataView(res.data.data)
+            }
+        }).catch(err => { swal_error(err) })
+    }, [changer])
 
     return (
         <div className="admin-master-report w-4/5 p-6 w-full h-full overflow-y-scroll scrollbar-hide">
@@ -212,7 +230,7 @@ const MasterFAQ = () => {
             </div>
 
             <div className="w-full bg-primary-400 rounded-lg p-5">
-                <SearchBox text="Search Question"/>
+                <SearchBox text="Search Question" handleChange={(e) => inputChange(e.target.value)}/>
 
                 <div className="overflow-auto w-full h-auto max-h-[30rem] scrollbar-hide rounded-lg shadow-xl">
                     <table className="table-fixed w-full font-semibold">
@@ -224,8 +242,8 @@ const MasterFAQ = () => {
                                 <th className="w-3/12">Action</th>
                             </tr>
                         </thead>
-                        {data!=null ? <tbody>
-                            {data.data.map((FAQ) => (
+                        {dataView!=null ? <tbody>
+                            {dataView.map((FAQ) => (
                                 <tr className="text-center odd:bg-primary-700 even:bg-primary-800" key={FAQ.id}>
                                     <td>{FAQ.id}</td>
                                     <td className="truncate">{FAQ.question}</td>
