@@ -100,7 +100,7 @@ const AdminTemplate = () => {
                     <Route path="/admin/performance">
                         <MasterPerformances />
                     </Route>
-                    <Route path="/admin">
+                    <Route exact path="/admin">
                         <Dashboard />
                     </Route>
                     <Route path="*">

@@ -1,0 +1,14 @@
+.kontrol-audio::-webkit-media-controls-panel {
+    background-color: #A9D6E5;
+    border-radius: 0.5rem;
+}
+
+.kontrol-audio::-webkit-media-controls-current-time-display {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.75rem; /* 28px */
+}
+
+.kontrol-audio::-webkit-media-controls-time-remaining-display {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.75rem; /* 28px */
+}

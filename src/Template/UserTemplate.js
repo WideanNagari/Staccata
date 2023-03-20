@@ -96,7 +96,7 @@ const UserTemplate = () => {
                     <Route path="/faq">
                         <FAQ />
                     </Route>
-                    <Route path="/">
+                    <Route exact path="/">
                         <Dashboard />
                     </Route>
                     <Route path="*">
