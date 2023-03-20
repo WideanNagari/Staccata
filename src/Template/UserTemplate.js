@@ -29,7 +29,7 @@ const UserTemplate = () => {
 
     const page = cookies.active_page===undefined ? "Dashboard" : cookies.active_page
     const [active, setActive] = useState(page);
-    
+
     const menuOnClick = (name) => {
         setActive(name);
         setCookie('active_page', name, {

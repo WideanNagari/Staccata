@@ -6,8 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import Swal from "sweetalert2";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useCookies } from 'react-cookie';
+import { FileUploader } from "react-drag-drop-files";
+
+const fileTypes = ["MP3"];
 
 const UserDashboard = () => {
     const [cookies, setCookie] = useCookies(['user_login']);
@@ -21,6 +24,26 @@ const UserDashboard = () => {
     const [convertDone, setConvertDone] = useState(false);
     const [voted, setVoted] = useState(false);
     const [filename, setFilename] = useState("");
+    const [fileValue, setFileValue] = useState(null);
+
+    const inputElement = (
+        <div className="h-full w-full text-center">
+            <div className="w-2 h-10"></div>
+            <p className="text-white mb-2 w-96">Drop MP3 File Here!</p>
+            <p className="text-white mb-3">or</p>
+            <button className="py-2 px-5 rounded-lg bg-primary-900 text-primary text-lg hover:bg-primary-800 duration-100">
+                <FontAwesomeIcon icon={faMagnifyingGlass} size="lg" color="#013A63" fixedWidth/>
+                <span className="ml-2 mb-10 text-primary-100">Choose File</span>
+            </button>
+            <div className="w-2 h-10"></div>
+        </div>
+    )
+
+    const inputedElement = (
+        <div className="h-full w-full text-center w-96 h-52 flex items-center justify-center">
+            <p className="text-white">{filename}</p>
+        </div>
+    )
 
     // const swal_error = (err) => {
     //     Swal.fire({
@@ -31,6 +54,11 @@ const UserDashboard = () => {
     //         confirmButtonText: 'OK'
     //     });
     // }
+
+    const fileChange = (e) => {
+        setFileValue(e)
+        setFilename(e.name)
+    };
 
     const swal_error = (err) => {
         Swal.fire({
@@ -43,17 +71,27 @@ const UserDashboard = () => {
     }
 
     const startConvert = () => {
-        setConverting(true)
-        console.log("convert")
-        setTitle("-")
-        setDuration("0 minute 0 seconds")
-        setAccuracy("0")
-        setLoss("0")
-
-        const current_filename = "sample"
-        setFilename(current_filename)
-        setConvertDone(true)
-        setConverting(false)
+        if(fileValue!==null){
+            setConverting(true)
+            console.log("convert")
+            setTitle("-")
+            setDuration("0 minute 0 seconds")
+            setAccuracy("0")
+            setLoss("0")
+    
+            const current_filename = "sample"
+            setFilename(current_filename)
+            setConvertDone(true)
+            setConverting(false)
+        }else{
+            Swal.fire({
+                title: "Choose file first!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
+        }
     }
 
     const startDownload = () => {
@@ -117,13 +155,24 @@ const UserDashboard = () => {
         <div className="user-dashboard gap-3 h-10 flex flex-col flex-grow gap-3 px-36 py-5">
             <div className="bg-primary-400 w-full h-1/2 rounded-lg overflow-hidden flex shadow-black shadow-xl">
                 <div className="w-2/5 h-full bg-primary-100 rounded-r-2xl shadow-black shadow-2xl p-5">
-                    <div className="w-full h-full border-4 border-primary-900 rounded-lg p-3">
+                    <div className="w-full h-full border-4 border-primary-900 rounded-lg p-3 flex items-center justify-center">
                         <div className="w-full h-full border-2 border-primary-900 border-dashed rounded-lg
                                         flex items-center justify-center">
-                            <div className="text-2xl text-center">
-                                <p className="text-white mb-2">Drop MP3 File Here!</p>
-                                <p className="text-white mb-3">or</p>
-                                <LightButton text="Choose File" icon={faMagnifyingGlass} addedClass="py-2 px-4" color="#013A63" />
+                            <div className="w-full h-full flex items-center justify-center text-2xl">
+                                {/* {filename==="" && <div className="text-center">
+                                    <p className="text-white mb-2">Drop MP3 File Here!</p>
+                                    <p className="text-white mb-3">or</p>
+                                    <LightButton text="Choose File" icon={faMagnifyingGlass} addedClass="py-2 px-4" color="#013A63" handleClick={fileClick} />
+                                    <input type='file' 
+                                            id='file' 
+                                            accept="audio/mp3" 
+                                            ref={inputFile}
+                                            className="hidden"
+                                            value={fileValue}
+                                            onChange={(e) => fileChange(e.target.value)}/>
+                                </div>} */}
+                                <FileUploader handleChange={fileChange} name="file" types={fileTypes}
+                                    children={fileValue===null?inputElement:inputedElement}/>
                             </div>
                         </div>
                     </div>
