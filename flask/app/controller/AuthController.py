@@ -49,6 +49,6 @@ def login():
             "data": data,
             "access_token": access_token,
             "refresh_token": refresh_token,
-        }, "Login sukses")
+        }, "Login success")
     except Exception as e:
         return response.badRequest({}, e)

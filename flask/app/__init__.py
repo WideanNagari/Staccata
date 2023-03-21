@@ -12,6 +12,8 @@ cors = CORS(app, resources={
         "origins": "*"
     }
 })
+UPLOAD_FOLDER = '../public/temp'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 Migrate = Migrate(app, db)
