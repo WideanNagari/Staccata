@@ -8,10 +8,13 @@ from datetime import datetime
 import os
 import time
 import numpy as np
-# import soundfile as sf
-# from pydub import AudioSegment
-from helper import PostProcessingHelper as post_helper
-from helper import PreProcessingHelper as pre_helper
+import soundfile as sf
+from pydub import AudioSegment
+import ffmpeg
+import torch
+from app.helper import PostProcessingHelper as post_helper
+from app.helper import PreProcessingHelper as pre_helper
+from app.helper import Predict
 
 # def formatJWT(data):
 #     data = {
@@ -27,59 +30,77 @@ from helper import PreProcessingHelper as pre_helper
 #     }
 #     return data
 
-@app.route('/convert', methods=['POST'])
-def convert():
+@app.route('/convert/<initial>', methods=['POST'])
+def convert(initial):
     try:
         initial_song = request.files["song"]
-        initial = request.json["initial"]
-        print(initial_song)
-        print("========================")
-        print(initial_song.__dict__)
+        # print(initial_song)
+        # print("========================")
+        # print(initial_song.__dict__)
+        # print(initial)
 
         timestamp = int(datetime.timestamp(datetime.now()))
         filename_initial = initial_song.filename[:-4]+"_"+str(timestamp)+".mp3"
-        initial_song.save(os.path.join(app.config['UPLOAD_FOLDER'], filename_initial))
+        initial_full_path = os.path.join(app.config['UPLOAD_FOLDER'], filename_initial)
+        initial_song.save(initial_full_path)
+        
+        print(os.path.exists(initial_full_path))
+        while not os.path.exists(initial_full_path):
+            time.sleep(1)
+        
+        if os.path.isfile(initial_full_path):
+            print("mp3 to mel")
+            file_awal = pre_helper.mp3_to_mel(initial_full_path)
+            print(file_awal.shape)
+            print("matrix to vector")
+            file_awal = pre_helper.matrix_to_vector(file_awal)
+            print(file_awal.shape)
 
-        # while not os.path.exists(filename_initial):
-            # time.sleep(1)
+            if(initial=="Piano"):
+                 a = 1
+            elif(initial=="Guitar"):
+                 a = 2
 
-        # if os.path.isfile(filename_initial):
-            # file_awal = pre_helper.mp3_to_mel(filename_initial)
-            # if (initial=='Piano'):
-                # convert to guitar
-                # prediction = post_helper.predict(file_awal, model)
-            # else :
-                # convert to piano
-                # prediction = post_helper.predict(file_awal, model)
+            prediction = Predict.predict(file_awal)
             
-            # # post-processing
-            # prediction = np.array(prediction)
-            # prediction = post_helper.lh_pass_melspec(prediction, 22050, 100, 'high')
-            # prediction = post_helper.lh_pass_melspec(prediction, 22050, 1000, 'low')
+            # post-processing
+            print("post-processing...")
+            prediction = np.array(prediction)
+            prediction = prediction.transpose()
+            print("Applying filter...")
+            prediction = post_helper.lh_pass_melspec(prediction, 22050, 100, 'high')
+            prediction = post_helper.lh_pass_melspec(prediction, 22050, 1000, 'low')
 
             # convert to waveform
-            # hasil = post_helper.mel_to_wave(prediction)
-        
-            # save jadi wav
-            # filename_target_wav = ".wav"
-            # sf.write(os.path.join(app.config['UPLOAD_FOLDER'], filename_target_wav), hasil, 22050, subtype='PCM_24')
+            print("converting back to waveform")
+            hasil = post_helper.mel_to_wave(prediction)
             
-            # while not os.path.exists(filename_target_wav):
-                # time.sleep(1)
+            # save jadi wav
+            print("saving wav...")
+            filename_target_wav = initial_song.filename[:-4]+"_"+str(timestamp)+".wav"
+            target_full_path = os.path.join(app.config['UPLOAD_FOLDER'], filename_target_wav)
+            sf.write(target_full_path, hasil, 22050, subtype='PCM_24')
+            
+            while not os.path.exists(target_full_path):
+                time.sleep(1)
 
-            # if os.path.isfile(filename_target_wav):
+            if os.path.isfile(target_full_path):
                 # convert to mp3
-                # sound = AudioSegment.from_wav('stereo_file.wav')
-                # timestamp = int(datetime.timestamp(datetime.now()))
-                # filename_target = initial_song.filename[:-4]+"_"+str(timestamp)+".mp3"
-                # sound.export(os.path.join(app.config['UPLOAD_FOLDER'], filename_target), format='mp3')
+                print("converting to mp3...")
+                sound = AudioSegment.from_wav(target_full_path)
+                timestamp = int(datetime.timestamp(datetime.now()))
+                filename_target = initial_song.filename[:-4]+"_"+str(timestamp)+".mp3"
+                print(target_full_path)
+                sound.export(os.path.join(app.config['UPLOAD_FOLDER'], filename_target), format='mp3')
 
             # bersihkan file initial & wav
-            # os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename_initial))
-            # os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename_target_wav))
+            print("finishing...")
+            os.remove(initial_full_path)
+            os.remove(target_full_path)
+            print("done!")
 
         return response.success({
-            # "filename": filename_target
+            "filename": filename_target
         }, "success")
     except Exception as e:
         return response.badRequest({}, e)
