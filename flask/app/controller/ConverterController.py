@@ -34,10 +34,6 @@ from app.helper import Predict
 def convert(initial):
     try:
         initial_song = request.files["song"]
-        # print(initial_song)
-        # print("========================")
-        # print(initial_song.__dict__)
-        # print(initial)
 
         timestamp = int(datetime.timestamp(datetime.now()))
         filename_initial = initial_song.filename[:-4]+"_"+str(timestamp)+".mp3"
@@ -103,4 +99,4 @@ def convert(initial):
             "filename": filename_target
         }, "success")
     except Exception as e:
-        return response.badRequest({}, e)
+        return response.serverError({}, e)

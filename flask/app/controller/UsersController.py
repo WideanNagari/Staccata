@@ -37,7 +37,7 @@ def getAllUser():
         data = formatArray(user)
         return response.success(data, "success")
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
 
 @app.route('/users/<id>', methods=['GET'])
 def getOneUser(id):
@@ -45,12 +45,13 @@ def getOneUser(id):
         user = Users.query.filter_by(id=id).first()
 
         if not user:
-            return response.badRequest({}, "tidak ada data user")
+            return response.notFound({}, "tidak ada data user")
         
-        return response.success(formatDataUser(user), "success")
+        data = formatDataUser(user)
+        return response.success(data, "success")
 
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/users/summary', methods=['GET'])
 def getUserSummary():
@@ -62,7 +63,7 @@ def getUserSummary():
         }, "success")
 
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/users', methods=['POST'])
 def createUser():
@@ -88,7 +89,7 @@ def createUser():
         return response.success(formatDataUser(user), "Sukses menambah data user")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/users/<id>', methods=['PUT'])
 def updateUser(id):
@@ -100,8 +101,16 @@ def updateUser(id):
         user = Users.query.filter_by(id=id).filter(Users.deleted_at==None).first()
         
         if not user:
-            return response.badRequest({}, "tidak ada data user")
+            return response.notFound({}, "tidak ada data user")
 
+        user_check = Users.query.filter_by(username=username).first()
+        if(user_check):
+            return response.badRequest({}, "Username already registered!")
+        
+        user_check = Users.query.filter_by(email=email).first()
+        if(user_check):
+            return response.badRequest({}, "Email already registered!")
+        
         user.username = username
         user.email = email
         # user.password = password
@@ -113,7 +122,7 @@ def updateUser(id):
         return response.success(formatDataUser(user), "Sukses update data user")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/users/advanced/<id>', methods=['PUT'])
 def updateUser2(id):
@@ -124,7 +133,7 @@ def updateUser2(id):
         user = Users.query.filter_by(id=id).filter(Users.deleted_at==None).first()
         
         if not user:
-            return response.badRequest({}, "tidak ada data user")
+            return response.notFound({}, "tidak ada data user")
 
         user.first_name = firstName
         user.last_name = lastName
@@ -135,7 +144,7 @@ def updateUser2(id):
         return response.success(formatDataUser(user), "Sukses update data user")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/users/<id>', methods=['DELETE'])
 def deleteUser(id):
@@ -143,7 +152,7 @@ def deleteUser(id):
         user = Users.query.filter_by(id=id).first()
         
         if not user:
-            return response.badRequest({}, "tidak ada data user")
+            return response.notFound({}, "tidak ada data user")
 
         # db.session.delete(user)
         if(user.deleted_at==None):
@@ -155,6 +164,6 @@ def deleteUser(id):
         return response.success(formatDataUser(user), "Sukses hapus data user")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
 
             

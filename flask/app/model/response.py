@@ -15,3 +15,19 @@ def badRequest(values, message):
     }
 
     return make_response(jsonify(res), 400)
+
+def notFound(values, message):
+    res = {
+        'data': values,
+        'message': message
+    }
+
+    return make_response(jsonify(res), 404)
+
+def serverError(values, message):
+    res = {
+        'data': values,
+        'message': message
+    }
+
+    return make_response(jsonify(res), 500)

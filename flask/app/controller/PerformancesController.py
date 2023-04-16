@@ -41,7 +41,7 @@ def getAllPerformance():
 
         return response.success(data, "success")
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
 
 @app.route('/performances/summary', methods=['GET'])
 def getPerformanceSummary():
@@ -57,7 +57,7 @@ def getPerformanceSummary():
         }, "success")
 
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/performances/<id>', methods=['GET'])
 def getOnePerformance(id):
@@ -65,7 +65,7 @@ def getOnePerformance(id):
         performance = Performances.query.filter_by(id=id).first()
 
         if not performance:
-            return response.badRequest({}, "tidak ada data performance")
+            return response.notFound({}, "tidak ada data performance")
         
         user = Users.query.filter_by(id=performance.user).first()
         data_user = formatDataUser(user)
@@ -73,7 +73,7 @@ def getOnePerformance(id):
         return response.success(formatDataPerformance(performance, data_user), "success")
 
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/performances', methods=['POST'])
 def createPerformance():
@@ -96,7 +96,7 @@ def createPerformance():
         return response.success(formatDataPerformance(performance, data_user), "Add performance data success")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/performances/<id>', methods=['PUT'])
 def updatePerformance(id):
@@ -112,7 +112,7 @@ def updatePerformance(id):
         performance = Performances.query.filter_by(id=id).filter(Performances.deleted_at==None).first()
         
         if not performance:
-            return response.badRequest({}, "tidak ada data performance")
+            return response.notFound({}, "tidak ada data performance")
 
         performance.title = title
         performance.initial = initial
@@ -130,7 +130,7 @@ def updatePerformance(id):
         return response.success(formatDataPerformance(performance, data_user), "Update performance data success")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/performances/<id>', methods=['DELETE'])
 def deletePerformance(id):
@@ -138,7 +138,7 @@ def deletePerformance(id):
         performance = Performances.query.filter_by(id=id).first()
         
         if not performance:
-            return response.badRequest({}, "tidak ada data performance")
+            return response.notFound({}, "tidak ada data performance")
         
         if(performance.deleted_at==None):
             performance.deleted_at = datetime.now()
@@ -153,7 +153,7 @@ def deletePerformance(id):
         return response.success(formatDataPerformance(performance, data_user), "Delete performance data success")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
             
 @app.route('/performances/vote/<id>', methods=['PUT'])
 def votePerformance(id):
@@ -163,7 +163,7 @@ def votePerformance(id):
         performance = Performances.query.filter_by(id=id).filter(Performances.deleted_at==None).first()
         
         if not performance:
-            return response.badRequest({}, "tidak ada data performance")
+            return response.notFound({}, "tidak ada data performance")
 
         performance.like_status = vote
         performance.updated_at = datetime.now()
@@ -176,4 +176,4 @@ def votePerformance(id):
         return response.success(formatDataPerformance(performance, data_user), "Performance vote success")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))

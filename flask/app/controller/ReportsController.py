@@ -37,7 +37,7 @@ def getAllReport():
 
         return response.success(data, "success")
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
 
 @app.route('/reports/<id>', methods=['GET'])
 def getOneReport(id):
@@ -45,7 +45,7 @@ def getOneReport(id):
         report = Reports.query.filter_by(id=id).first()
 
         if not report:
-            return response.badRequest({}, "tidak ada data report")
+            return response.notFound({}, "tidak ada data report")
         
         user = Users.query.filter_by(id=report.reporter).first()
         data_user = formatDataUser(user)
@@ -53,7 +53,7 @@ def getOneReport(id):
         return response.success(formatDataReport(report, data_user), "success")
 
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/reports/summary', methods=['GET'])
 def getReportSummary():
@@ -65,7 +65,7 @@ def getReportSummary():
         }, "success")
 
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/reports', methods=['POST'])
 def createReport():
@@ -88,7 +88,7 @@ def createReport():
         return response.success(formatDataReport(report, data_user), "Sukses menambah data report")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/reports/<id>', methods=['PUT'])
 def updateReport(id):
@@ -100,7 +100,7 @@ def updateReport(id):
         report = Reports.query.filter_by(id=id).filter(Reports.deleted_at==None).first()
         
         if not report:
-            return response.badRequest({}, "tidak ada data report")
+            return response.notFound({}, "tidak ada data report")
 
         report.title = title
         report.description = description
@@ -115,7 +115,7 @@ def updateReport(id):
         return response.success(formatDataReport(report, data_user), "Sukses update data report")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/reports/<id>', methods=['DELETE'])
 def deleteReport(id):
@@ -123,7 +123,7 @@ def deleteReport(id):
         report = Reports.query.filter_by(id=id).first()
         
         if not report:
-            return response.badRequest({}, "tidak ada data report")
+            return response.notFound({}, "tidak ada data report")
 
         if(report.deleted_at==None):
             report.deleted_at = datetime.now()
@@ -139,5 +139,5 @@ def deleteReport(id):
         return response.success(formatDataReport(report, data_user), "Sukses hapus data report")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
             

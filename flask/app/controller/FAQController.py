@@ -29,7 +29,7 @@ def getAllFAQ():
         data = formatArrayFAQ(faq)
         return response.success(data, "success")
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
 
 @app.route('/faq/<id>', methods=['GET'])
 def getOneFAQ(id):
@@ -37,12 +37,12 @@ def getOneFAQ(id):
         faq = FAQ.query.filter_by(id=id).first()
 
         if not faq:
-            return response.badRequest({}, "tidak ada data FAQ")
+            return response.notFound({}, "tidak ada data FAQ")
         
         return response.success(formatDataFAQ(faq), "success")
 
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/faq', methods=['POST'])
 def createFAQ():
@@ -57,7 +57,7 @@ def createFAQ():
         return response.success(formatDataFAQ(faq), "Sukses menambah data FAQ")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/faq/<id>', methods=['PUT'])
 def updateFAQ(id):
@@ -68,7 +68,7 @@ def updateFAQ(id):
         faq = FAQ.query.filter_by(id=id).filter(FAQ.deleted_at==None).first()
         
         if not faq:
-            return response.badRequest({}, "tidak ada data FAQ")
+            return response.notFound({}, "tidak ada data FAQ")
 
         faq.question = question
         faq.answer = answer
@@ -79,7 +79,7 @@ def updateFAQ(id):
         return response.success(formatDataFAQ(faq), "Sukses update data FAQ")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
     
 @app.route('/faq/<id>', methods=['DELETE'])
 def deleteFAQ(id):
@@ -87,7 +87,7 @@ def deleteFAQ(id):
         faq = FAQ.query.filter_by(id=id).first()
         
         if not faq:
-            return response.badRequest({}, "tidak ada data FAQ")
+            return response.notFound({}, "tidak ada data FAQ")
         
         if(faq.deleted_at==None):
             faq.deleted_at = datetime.now()
@@ -100,6 +100,6 @@ def deleteFAQ(id):
         return response.success(formatDataFAQ(faq), "Sukses hapus data FAQ")
     
     except Exception as e:
-        return response.badRequest({}, str(e))
+        return response.serverError({}, str(e))
 
             
