@@ -12,7 +12,7 @@ const Login = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['user_login']);
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [remember, setRemember] = useState(true)
+    // const [remember, setRemember] = useState(true)
     const history = useHistory();
     
     const swal_error = (err) => {
@@ -69,9 +69,9 @@ const Login = () => {
         }
     }
 
-    const rememberChanged = () => {
-        setRemember(!remember);
-    }
+    // const rememberChanged = () => {
+    //     setRemember(!remember);
+    // }
 
     return (
         <div className="login-main h-full">
@@ -84,7 +84,7 @@ const Login = () => {
                     <div className="h-full w-1/2 flex items-center">
                         <a href="/"><img src="/Logo/logo.png" alt="" /></a>
                     </div>
-                    <div className="bg-primary-900 h-full w-1/2 py-24 px-10">
+                    <div className="bg-primary-900 h-full w-1/2 py-32 px-10">
                         <h1 className="font-bold text-5xl text-center mb-14">Log in</h1>
                         <form onSubmit={handleSubmit}>
                             <InputText label="Username" name="username" id="username" type="text"
@@ -95,10 +95,10 @@ const Login = () => {
                                     value={password}
                                     handleChange={setPassword} />
 
-                            <input type="checkbox" name="rememberme" id="remember" className="w-4 h-4 mb-5" 
+                            {/* <input type="checkbox" name="rememberme" id="remember" className="w-4 h-4 mb-5" 
                                     value={remember} 
                                     onClick={rememberChanged}/>
-                            <label htmlFor="remember" className="ml-2">Remember Me!</label>
+                            <label htmlFor="remember" className="ml-2">Remember Me!</label> */}
 
                             <Button text="Login" addedClass="mt-1 mb-5"/>
                             

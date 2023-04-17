@@ -207,7 +207,7 @@ const MasterReport = () => {
             }
 
 { isOpenModal &&             
-                <div id="modalSession" className="fixed top-[20%] left-[25%] bg-primary-900 h-3/5 w-1/2 text-primary rounded-lg
+                <div id="modalSession" className="fixed top-[15%] left-[25%] bg-primary-900 h-[70%] w-1/2 text-primary rounded-lg
                                                     py-5">
                     <div className="text-4xl font-bold text-center mb-5">
                         <p>Performance Details</p>
@@ -228,7 +228,7 @@ const MasterReport = () => {
                             <div className="w-2/3">
                                 <p className="mb-1">{user}</p>
                                 <p className="mb-1 truncate">{title}</p>
-                                <p className="mb-1">{duration}</p>
+                                <p className="mb-1">{duration} seconds</p>
                                 <p className="mb-1">{initial}</p>
                                 <p className="mb-1">{target}</p>
                                 <p className="mb-1">{accuracy}%</p>

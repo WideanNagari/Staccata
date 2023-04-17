@@ -18,8 +18,8 @@ const About = () => {
                     <div className="w-full">
                         <p className="text-4xl font-bold mb-5">Staccata</p>
                         <p className="text-2xl mb-10">
-                            Staccata is a website where you can change your mp3 song instrument. This website is using machine learning to do the task.
-                            Staccata is made by Widean Nagari, an informatics engineering student of Institut Sains dan Teknologi Terpadu Surabaya.
+                            Staccata is a website where you can change the instrument of your MP3 song. This website utilizes machine learning to perform the task. 
+                            Staccata was created by Widean Nagari, a student of informatics engineering at Institut Sains dan Teknologi Terpadu Surabaya.
                         </p>
                         <button className="bg-primary-100 px-5 py-2 text-lg rounded-lg hover:bg-primary-200 duration-100"
                             onClick={toDashboard}>
