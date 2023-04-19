@@ -6,6 +6,7 @@ from app import app, db
 from app.model import response
 from flask import request
 from datetime import datetime
+from sqlalchemy import func
 
 def formatDataPerformance(data, user):
     data = {
@@ -55,6 +56,23 @@ def getPerformanceSummary():
             "dislike": dislike,
             "converted": songs
         }, "success")
+
+    except Exception as e:
+        return response.serverError({}, str(e))
+    
+@app.route('/performances/top/<initial>', methods=['GET'])
+def getTopPerformance(initial):
+    try: 
+        perform = db.session.query(Users.username, Performances.initial, func.count(Performances.user).label("convert")).join(Users).group_by(Performances.user, Performances.initial).order_by(func.count(Performances.user).desc()).all()
+        res = []
+        for i in perform:
+            if(i.initial==initial):        
+                res.append({
+                    'username': str(i.username),
+                    'convert_count': str(i.convert)
+                })
+        
+        return response.success(res, "success")
 
     except Exception as e:
         return response.serverError({}, str(e))

@@ -6,6 +6,7 @@ from app import app, db
 from app.model import response
 from flask import request
 from datetime import datetime
+from sqlalchemy import func
 
 def formatDataReport(data, reporter):
     data = {
@@ -63,6 +64,22 @@ def getReportSummary():
         return response.success({
             "report_count": reports
         }, "success")
+
+    except Exception as e:
+        return response.serverError({}, str(e))
+    
+@app.route('/reports/top', methods=['GET'])
+def getTopReport():
+    try: 
+        reports = db.session.query(Users.username, func.count(Reports.reporter).label("reporter")).join(Users).group_by(Reports.reporter).order_by(func.count(Reports.reporter).desc()).all()
+        res = []
+        for i in reports:
+            res.append({
+                'username': str(i.username),
+                'report_count': str(i.reporter)
+            })
+        
+        return response.success(res, "success")
 
     except Exception as e:
         return response.serverError({}, str(e))
