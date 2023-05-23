@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import Swal from "sweetalert2";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useCookies } from 'react-cookie';
 import { FileUploader } from "react-drag-drop-files";
 
@@ -14,16 +14,17 @@ const fileTypes = ["MP3"];
 
 const UserDashboard = () => {
     const [cookies, setCookie] = useCookies(['user_login']);
-    const [title, setTitle] = useState('-');
+    const [title, setTitle] = useState('Sample');
     const [initial, setInitial] = useState('Piano');
     const [target, setTarget] = useState('Guitar');
     const [duration, setDuration] = useState('0 minute 0 seconds');
-    const [accuracy, setAccuracy] = useState('0');
-    const [loss, setLoss] = useState('0');
+    // const [accuracy, setAccuracy] = useState('0');
+    // const [loss, setLoss] = useState('0');
     const [converting, setConverting] = useState(false);
-    const [convertDone, setConvertDone] = useState(false);
+    const [convertDone, setConvertDone] = useState(true);
     const [voted, setVoted] = useState(false);
     const [filename, setFilename] = useState("");
+    const [convertedFilename, setConvertedFilename] = useState("piano_1684858993.mp3");
     const [fileValue, setFileValue] = useState(null);
 
     const inputElement = (
@@ -71,20 +72,35 @@ const UserDashboard = () => {
                 {headers: {
                     'Content-Type': 'multipart/form-data',
                 }}
-            ).then((res) => {
-                if (res.status !== 200){
-                    swal_error(res)
-                }else{
-                    setTitle("-")
-                    setDuration("0 minute 0 seconds")
-                    setAccuracy("0")
-                    setLoss("0")
-            
-                    const current_filename = res.data.data.filename
-                    setFilename(current_filename)
-                    setConvertDone(true)
-                    setConverting(false)
-                }
+            )
+            .then((res) => {
+                setTitle("-")
+                setDuration("0 minute 0 seconds")
+                // setAccuracy("0")
+                // setLoss("0")
+        
+                // const current_filename = res.data.data.filename
+                
+                // const blob = new Blob([res.data], { type: 'audio/mp3' });
+                // const current_filename = URL.createObjectURL(blob);
+                // console.log(blob)
+                // console.log(current_filename)
+                const current_filename=res.data.filename
+                setConvertedFilename(current_filename)
+                setConvertDone(true)
+                setConverting(false)
+                
+                const id = cookies.user_login===undefined ? 1 : cookies.user_login.id
+
+                axios
+                .put("http://localhost:5000/performances/users/"+res.data.data.id, {user: id})
+                .then((e) => {
+                    if (e.status !== 200){
+                        swal_error(e)
+                    }
+                }).catch(err => {
+                    swal_error(err)
+                })
             }).catch(err => {
                 swal_error(err)
             })
@@ -225,8 +241,8 @@ const UserDashboard = () => {
                                 <div className="w-full h-10">
                                     <audio
                                         controls
-                                        src={"/temp/"+filename}
                                         className="kontrol-audio w-full">
+                                        <source src={convertedFilename} type="audio/mp3" />
                                     </audio>
                                     {/* <p className="text-lg text-primary-100">1:03</p>
                                     <div className="w-full h-4 border-2 border-primary-100 rounded-full">
@@ -261,22 +277,22 @@ const UserDashboard = () => {
                             <p className="text-xl text-white font-bold">More Information</p>
                         </div>
                     </div>
-                    <div className="w-full p-3 flex gap-2 text-lg text-white">
+                    <div className="w-full p-3 flex gap-2 text-lg text-white py-5">
                         <div className='w-2/5 text-right'>
                             <p className="mb-1">Title :</p>
                             <p className="mb-1">Initial Instrument :</p>
                             <p className="mb-1">Target Instrument :</p>
                             <p className="mb-1">Duration :</p>
-                            <p className="mb-1">Accuracy :</p>
-                            <p>Loss :</p>
+                            {/* <p className="mb-1">Accuracy :</p> */}
+                            {/* <p>Loss :</p> */}
                         </div>
                         <div className='w-3/5'>
                             <p className='truncate mb-1'>{title}</p>
                             <p className="mb-1">{initial}</p>
                             <p className="mb-1">{target}</p>
                             <p className="mb-1">{duration}</p>
-                            <p className="mb-1">{accuracy}%</p>
-                            <p>{loss}</p>
+                            {/* <p className="mb-1">{accuracy}%</p> */}
+                            {/* <p>{loss}</p> */}
                         </div>
                     </div>
                     <div className="flex justify-center">

@@ -124,20 +124,40 @@ def updatePerformance(id):
         initial = request.json["initial"]
         target = request.json["target"]
         duration = request.json["duration"]
-        accuracy = request.json["accuracy"]
-        loss = request.json["loss"]
 
         performance = Performances.query.filter_by(id=id).filter(Performances.deleted_at==None).first()
         
         if not performance:
             return response.notFound({}, "tidak ada data performance")
 
+        performance.user = user
         performance.title = title
         performance.initial = initial
         performance.target = target
         performance.duration = duration
-        performance.accuracy = accuracy
-        performance.loss = loss
+        performance.updated_at = datetime.now()
+        
+        db.session.commit()
+
+        user = Users.query.filter_by(id=performance.user).first()
+        data_user = formatDataUser(user)
+
+        return response.success(formatDataPerformance(performance, data_user), "Update performance data success")
+    
+    except Exception as e:
+        return response.serverError({}, str(e))
+    
+@app.route('/performances/users/<id>', methods=['PUT'])
+def updateUserPerformance(id):
+    try:
+        user = request.json["user"]
+
+        performance = Performances.query.filter_by(id=id).filter(Performances.deleted_at==None).first()
+        
+        if not performance:
+            return response.notFound({}, "tidak ada data performance")
+
+        performance.user = user
         performance.updated_at = datetime.now()
         
         db.session.commit()

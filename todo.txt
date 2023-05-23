@@ -1,0 +1,5 @@
+1. simpan data di gdrive
+
+2. hapus accuracy dan loss
+
+3. title masih ga jelas

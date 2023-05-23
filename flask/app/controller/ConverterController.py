@@ -1,4 +1,5 @@
 from app.model.users import Users
+from app.model.performances import Performances
 
 from app import app, db
 from app.model import response
@@ -53,11 +54,13 @@ def convert(initial):
             print(file_awal.shape)
 
             if(initial=="Piano"):
-                 a = 1
+                 jenis="p2g"
+                 target="Guitar"
             elif(initial=="Guitar"):
-                 a = 2
+                 jenis="g2p"
+                 target="Piano"
 
-            prediction = Predict.predict(file_awal)
+            prediction = Predict.predict(file_awal,jenis)
             
             # post-processing
             print("post-processing...")
@@ -95,8 +98,13 @@ def convert(initial):
             os.remove(target_full_path)
             print("done!")
 
+            performance = Performances(user=1, title=filename_target, initial=initial, target=target, duration=0, accuracy=0, loss=0)
+            db.session.add(performance)
+            db.session.commit()
+
         return response.success({
-            "filename": filename_target
+            "filename": filename_target,
+            "id": performance.id
         }, "success")
     except Exception as e:
         return response.serverError({}, e)
