@@ -20,10 +20,9 @@ const MasterReport = () => {
     const [ title, setTitle ] = useState("")
     const [ initial, setInitial ] = useState("")
     const [ target, setTarget ] = useState("")
+    const [ gdrive_link, setGdriveLink ] = useState("")
     const [ user, setUser ] = useState("")
     const [ duration, setDuration ] = useState(0)
-    const [ accuracy, setAccuracy ] = useState(0)
-    const [ loss, setLoss ] = useState(0)
     const [ liked, setLiked ] = useState("")
     const [ convert_date, setConvertDate ] = useState("")
     const [ changer, setChanger ] = useState(false)
@@ -61,9 +60,8 @@ const MasterReport = () => {
         setTitle(data.title)
         setInitial(data.initial)
         setTarget(data.target)
+        setGdriveLink(data.gdrive_link)
         setDuration(data.duration)
-        setAccuracy(data.accuracy)
-        setLoss(data.loss)
         setConvertDate(data.created_at)
         
         if(data.like_status===null) setLiked("Not yet liked")
@@ -79,8 +77,7 @@ const MasterReport = () => {
         setInitial("")
         setTarget("")
         setDuration(0)
-        setAccuracy(0)
-        setLoss(0)
+        setGdriveLink("")
         setLiked("")
         setConvertDate("")
         setOpenModal(false)
@@ -220,8 +217,7 @@ const MasterReport = () => {
                                 <p className="mb-1">Duration :</p>
                                 <p className="mb-1">Initial Instrument :</p>
                                 <p className="mb-1">Target Instrument :</p>
-                                <p className="mb-1">Accuracy :</p>
-                                <p className="mb-1">Loss :</p>
+                                <p className="mb-1">GDrive:</p>
                                 <p className="mb-1">Like Status :</p>
                                 <p>Converted At :</p>
                             </div>
@@ -231,8 +227,7 @@ const MasterReport = () => {
                                 <p className="mb-1">{duration} seconds</p>
                                 <p className="mb-1">{initial}</p>
                                 <p className="mb-1">{target}</p>
-                                <p className="mb-1">{accuracy}%</p>
-                                <p className="mb-1">{loss}</p>
+                                <p className="mb-1">{gdrive_link}</p>
                                 <p className="mb-1">{liked}</p>
                                 <p>{convert_date}</p>
                             </div>

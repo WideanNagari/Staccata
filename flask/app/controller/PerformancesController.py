@@ -16,8 +16,7 @@ def formatDataPerformance(data, user):
         'target': data.target,
         'user': user,
         'duration': data.duration,
-        'accuracy': data.accuracy,
-        'loss': data.loss,
+        'gdrive_link': data.gdrive_link,
         'like_status': data.like_status,
         'created_at': data.created_at.strftime('%A, %d %B %Y %H:%M:%S'),
         'updated_at': data.updated_at.strftime('%A, %d %B %Y %H:%M:%S'),
@@ -101,10 +100,9 @@ def createPerformance():
         initial = request.json["initial"]
         target = request.json["target"]
         duration = request.json["duration"]
-        accuracy = request.json["accuracy"]
-        loss = request.json["loss"]
+        link = request.json["gdrive_link"]
 
-        performance = Performances(user=user, title=title, initial=initial, target=target, duration=duration, accuracy=accuracy, loss=loss)
+        performance = Performances(user=user, title=title, initial=initial, target=target, duration=duration, gdrive_link=link)
         db.session.add(performance)
         db.session.commit()
 

@@ -98,7 +98,11 @@ def convert(initial):
             os.remove(target_full_path)
             print("done!")
 
-            performance = Performances(user=1, title=filename_target, initial=initial, target=target, duration=0, accuracy=0, loss=0)
+            # To Do
+            link = ""
+            duration=0
+
+            performance = Performances(user=1, title=filename_target, initial=initial, target=target, duration=duration, gdrive_link=link)
             db.session.add(performance)
             db.session.commit()
 

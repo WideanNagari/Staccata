@@ -27,7 +27,7 @@ CREATE TABLE `alembic_version` (
 /*Data for the table `alembic_version` */
 
 insert  into `alembic_version`(`version_num`) values 
-('58357c245e55');
+('686bd0deb31f');
 
 /*Table structure for table `faq` */
 
@@ -46,11 +46,11 @@ CREATE TABLE `faq` (
 /*Data for the table `faq` */
 
 insert  into `faq`(`id`,`question`,`answer`,`created_at`,`updated_at`,`deleted_at`) values 
-(1,'Berapa durasi maksimal dari lagu yang dapat dikonversi?','Untuk saat ini, belum ada batasan dari berapa durasi terlama lagu yang dapat dikonversi. Namun perlu diketahui bahwa semakin lama durasi dari lagu, maka semakin lama pula waktu yang dibutuhkan untuk proses konversi.','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(2,'File jenis apa sajakah yang dapat dikonversi?','Jenis file yang dapat dikonversi adalah file berekstensi .mp3. File jenis lain tidak dapat diterima oleh sistem.','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(3,'Apa maksud dari drop-down instrumen yang berada disebelah kiri tombol convert?','Drop-down berguna untuk memilih instrumen apa yang ada didalam file lagu yang diupload. Pengguna perlu memilih instrumen yang tepat agar mesin dapat melakukan konversi dengan benar.','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(4,'Apa saja jenis pesan yang boleh dikirimkan pada bagian Reports?','Pengguna bebas mengirimkan pesan dalam bentuk kritikan, saran, maupun pesan lain seperti bug yang ditemukan, tampilan yang kurang menyenangkan, dll. Pesan yang dikirimkan akan berguna untuk pengembangan website kedepannya.','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(5,'Bagaimana cara membatalkan like/dislike?','Untuk saat ini, fitur like/dislike hanya dapat dilakukan sekali dan tidak dapat dibatalkan.','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL);
+(1,'Pm two your run year.','Quality gas final try above decision finish.','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(2,'Too affect pretty.','Beautiful ten there meet suffer shake.','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(3,'Fight article including enter more.','Past item side music.','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(4,'Democratic southern improve notice give.','Data six agency movement agency everyone how.','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(5,'Child sell chance admit effort action rock.','Simply suddenly son behavior.','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL);
 
 /*Table structure for table `performances` */
 
@@ -63,9 +63,8 @@ CREATE TABLE `performances` (
   `target` varchar(6) NOT NULL,
   `user` int(11) DEFAULT NULL,
   `duration` int(11) NOT NULL,
-  `accuracy` float NOT NULL,
-  `loss` float NOT NULL,
   `like_status` int(11) DEFAULT NULL,
+  `gdrive_link` text NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
@@ -76,12 +75,12 @@ CREATE TABLE `performances` (
 
 /*Data for the table `performances` */
 
-insert  into `performances`(`id`,`title`,`initial`,`target`,`user`,`duration`,`accuracy`,`loss`,`like_status`,`created_at`,`updated_at`,`deleted_at`) values 
-(1,'Eye wife trouble hope recent American word necessary.','Piano','Guitar',4,120,87.6339,56.1178,0,'2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(2,'Other age nature leg letter.','Guitar','Piano',2,57,77.7997,63.4842,0,'2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(3,'Four under one remain when art check.','Piano','Guitar',4,37,73.8419,67.5629,1,'2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(4,'Hair real evidence whether.','Piano','Guitar',3,20,50.4981,57.9166,1,'2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(5,'Information appear case very sign.','Guitar','Piano',6,32,53.3363,96.9338,1,'2023-03-20 00:32:46','2023-03-20 00:32:46',NULL);
+insert  into `performances`(`id`,`title`,`initial`,`target`,`user`,`duration`,`like_status`,`gdrive_link`,`created_at`,`updated_at`,`deleted_at`) values 
+(1,'Mind live rate focus.','Piano','Guitar',5,149,1,'x','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(2,'As phone per thousand area understand feel trouble.','Guitar','Piano',6,126,0,'x','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(3,'After describe low member including production.','Guitar','Piano',5,143,0,'x','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(4,'From think any nice she.','Guitar','Piano',3,67,1,'x','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(5,'Art up court certain stop improve daughter.','Piano','Guitar',4,165,1,'x','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL);
 
 /*Table structure for table `reports` */
 
@@ -104,11 +103,11 @@ CREATE TABLE `reports` (
 /*Data for the table `reports` */
 
 insert  into `reports`(`id`,`title`,`description`,`reporter`,`reporter_name`,`created_at`,`updated_at`,`deleted_at`) values 
-(1,'Prepare large establish late pretty class.','Policy add sign TV surface center.',1,'guest','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(2,'Masalah pada pengunduhan lagu','saya baru saja melakukan konversi pada lagu yang saya kirimkan, namun saya tidak dapat mengunduh lagu tersebut. Apa yang terjadi? apakah terdapat bug pada fitur tersebut?',4,'Michael Grant','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(3,'Meeting interesting election know put.','Budget daughter although talk say bill.',3,'aflores','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(4,'If history right north movement run.','Out effect expert people room involve.',5,'susancarney','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(5,'Today single protect only language.','Agree simply blood college.',2,'melissa06','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL);
+(1,'Suffer return source impact north nice general.','Clearly she memory never direction will people hold.',1,'guest','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(2,'Environmental total raise region down citizen end.','Try start field everybody.',3,'lindseywilliams','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(3,'Child may development front task.','Prevent everyone well already hand federal join.',4,'smithkim','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(4,'Later same pressure.','Value week agree.',1,'guest','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(5,'Short boy heavy sense cut.','Organization scientist service wish attention industry college hour.',4,'smithkim','2023-05-24 23:29:24','2023-05-24 23:29:24',NULL);
 
 /*Table structure for table `users` */
 
@@ -134,12 +133,12 @@ CREATE TABLE `users` (
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`username`,`first_name`,`last_name`,`email`,`password`,`file_converted_piano`,`file_converted_guitar`,`report_sent`,`level`,`created_at`,`updated_at`,`deleted_at`) values 
-(1,'guest',NULL,NULL,'guest@ggmail.com','pbkdf2:sha256:260000$NsHLhDECYIWW7uR4$4418d809f1159a0e60c5fbd43698037cc787538b0de8ed3a536ac58889fe6566',0,0,0,0,'2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(2,'melissa06',NULL,NULL,'melissa06@ggmail.com','pbkdf2:sha256:260000$TvD2t77ALVIsCToo$084d5cb3686bd0bc1ac148582fd63acdd8b3861b2c847771ce1c3f0e24a75fe8',4,8,7,1,'2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(3,'aflores',NULL,NULL,'aflores@ggmail.com','pbkdf2:sha256:260000$xXgrIVJnJ0ojDamP$a64122987441fd958eb8a09bb66dffb1b3633d0294fb7a51a8cc702de8bd532e',2,8,3,0,'2023-03-20 00:32:46','2023-03-20 00:32:46','2023-04-17 23:23:46'),
-(4,'pruittmichael','Michael','Grant','pruittmichael@ggmail.com','pbkdf2:sha256:260000$Da4ilXXVa2GMm1cs$2fefeb13f40653c09a0238387e85b0c1e35524a43041bbef0b5daf0d74376aa9',2,6,6,0,'2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(5,'susancarney',NULL,NULL,'susancarney@ggmail.com','pbkdf2:sha256:260000$YulcyU1DKJYHx0zb$5e90bbdc11bc9cc8d1fc7b3e3ef5d5ceb99321b5ae4329c2e76a5f3fe2bbd903',4,3,1,0,'2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
-(6,'rwood',NULL,NULL,'rwood@ggmail.com','pbkdf2:sha256:260000$mVexJCKtmFONf8Ix$30f495b502f485b06be0e1eaaf572392362ff4c772573dff9ae29f805d2ffab6',1,9,6,0,'2023-03-20 00:32:46','2023-03-20 00:32:46',NULL);
+(1,'guest',NULL,NULL,'guest@ggmail.com','pbkdf2:sha256:260000$ugW4yO8aOP0hvA1i$1f927edca7072c176e01993549d8ea206fdaedd299a35ad0c00599aab288ce9a',0,0,0,0,'2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(2,'popejared',NULL,NULL,'popejared@ggmail.com','pbkdf2:sha256:260000$K19J3rA9AjxKxfZJ$2719e51849bf0e97e748e8a170bea48052b78e7802517a90b1d7b1fdb19292b7',5,0,1,1,'2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(3,'lindseywilliams',NULL,NULL,'lindseywilliams@ggmail.com','pbkdf2:sha256:260000$mnua4w1PCESMOPbn$3b6039b8fa8160fa284904677b5011a0c209fc7256faaafdc7be24e4455ab61e',9,8,9,0,'2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(4,'smithkim',NULL,NULL,'smithkim@ggmail.com','pbkdf2:sha256:260000$x2W7a1czCzG5JQHC$b5ad23c6c6dd4699c04d37f3b0312a9da32bd7172cdedcf740473e507462a7f6',7,5,0,0,'2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(5,'amata',NULL,NULL,'amata@ggmail.com','pbkdf2:sha256:260000$ygHYgFGtqLelRNIe$217b92466c1b8deb52f7883d62059516a2b458b636246b844af242b8b99eb221',4,1,2,0,'2023-05-24 23:29:24','2023-05-24 23:29:24',NULL),
+(6,'wagnershelby',NULL,NULL,'wagnershelby@ggmail.com','pbkdf2:sha256:260000$HmsCUKUnj1ykLG4e$3d6bef149c1549ab51b18d9e7d24ff7910c54e0307009eabdb19f827c5412eec',6,0,6,0,'2023-05-24 23:29:24','2023-05-24 23:29:24',NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

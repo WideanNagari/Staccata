@@ -64,11 +64,10 @@ def seed(records):
             duration = random.randint(10, 200)
             initial = random.randint(0, 1)
             target = int(not initial)
-            accuracy = random.uniform(50.0, 100.0)
-            loss = random.uniform(50.0, 100.0)
+            link="x"
 
             performance = Performances(user=u, title=title2, duration=duration, initial=arr_music[initial], target=arr_music[target], 
-                                        accuracy=accuracy, loss=loss, like_status=like_status)
+                                        gdrive_link=link, like_status=like_status)
             db.session.add(performance)
         db.session.commit()
 
