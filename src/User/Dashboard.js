@@ -14,17 +14,17 @@ const fileTypes = ["MP3"];
 
 const UserDashboard = () => {
     const [cookies, setCookie] = useCookies(['user_login']);
-    const [title, setTitle] = useState('Sample');
+    const [title, setTitle] = useState('...');
     const [initial, setInitial] = useState('Piano');
     const [target, setTarget] = useState('Guitar');
     const [duration, setDuration] = useState('0 minute 0 seconds');
     // const [accuracy, setAccuracy] = useState('0');
     // const [loss, setLoss] = useState('0');
     const [converting, setConverting] = useState(false);
-    const [convertDone, setConvertDone] = useState(true);
+    const [convertDone, setConvertDone] = useState(false);
     const [voted, setVoted] = useState(false);
     const [filename, setFilename] = useState("");
-    const [convertedFilename, setConvertedFilename] = useState("piano_1684858993.mp3");
+    const [convertedFileID, setConvertedFileID] = useState("");
     const [fileValue, setFileValue] = useState(null);
 
     const inputElement = (
@@ -74,19 +74,15 @@ const UserDashboard = () => {
                 }}
             )
             .then((res) => {
-                setTitle("-")
-                setDuration("0 minute 0 seconds")
-                // setAccuracy("0")
-                // setLoss("0")
-        
-                // const current_filename = res.data.data.filename
-                
-                // const blob = new Blob([res.data], { type: 'audio/mp3' });
-                // const current_filename = URL.createObjectURL(blob);
-                // console.log(blob)
-                // console.log(current_filename)
-                const current_filename=res.data.filename
-                setConvertedFilename(current_filename)
+                setTitle(res.data.data.title)
+
+                let durasi = res.data.data.duration
+                let menit = Math.floor(durasi/60)
+                let detik = Math.floor(durasi%60)
+                setDuration(menit+" minute "+detik+" seconds")
+
+                const current_fileid=res.data.data.file_id
+                setConvertedFileID(current_fileid)
                 setConvertDone(true)
                 setConverting(false)
                 
@@ -242,7 +238,7 @@ const UserDashboard = () => {
                                     <audio
                                         controls
                                         className="kontrol-audio w-full">
-                                        <source src={convertedFilename} type="audio/mp3" />
+                                        <source src={"https://drive.google.com/uc?export=download&id="+convertedFileID} type="audio/mp3" />
                                     </audio>
                                     {/* <p className="text-lg text-primary-100">1:03</p>
                                     <div className="w-full h-4 border-2 border-primary-100 rounded-full">
@@ -259,7 +255,7 @@ const UserDashboard = () => {
                             </div>
                         </div>
                         <div className="w-full flex justify-center">
-                            <a href={"temp/"+filename} download>
+                            <a href={"https://drive.google.com/uc?export=download&id="+convertedFileID} download>
                                 <LightButton text="Download" icon={faDownload} addedClass="py-2 px-10" color="#013A63" handleClick={startDownload}/>
                             </a>
                         </div>

@@ -24,7 +24,6 @@ def lh_pass_melspec(melspec, sr, cutoff_freq, filter='high'):
     filtered_melspec = librosa.feature.melspectrogram(S=filtered_power_spec, sr=sr, n_mels=melspec.shape[0])
     
     return filtered_melspec
-    return 1
 
 def mel_to_wave(mel):
     S = librosa.feature.inverse.mel_to_stft(mel)

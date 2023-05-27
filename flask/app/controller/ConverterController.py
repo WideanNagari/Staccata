@@ -16,6 +16,8 @@ import torch
 from app.helper import PostProcessingHelper as post_helper
 from app.helper import PreProcessingHelper as pre_helper
 from app.helper import Predict
+from app.helper import GoogleDriveService
+from mutagen.mp3 import MP3
 
 # def formatJWT(data):
 #     data = {
@@ -30,6 +32,12 @@ from app.helper import Predict
 #         'report_sent': data.report_sent
 #     }
 #     return data
+
+@app.route('/posting/<title>', methods=['POST'])
+def coba(title):
+    drive = GoogleDriveService.createService()
+    id = GoogleDriveService.uploadFile(drive, title)
+    return "https://drive.google.com/file/d/"+id
 
 @app.route('/convert/<initial>', methods=['POST'])
 def convert(initial):
@@ -89,26 +97,36 @@ def convert(initial):
                 sound = AudioSegment.from_wav(target_full_path)
                 timestamp = int(datetime.timestamp(datetime.now()))
                 filename_target = initial_song.filename[:-4]+"_"+str(timestamp)+".mp3"
-                print(target_full_path)
-                sound.export(os.path.join(app.config['UPLOAD_FOLDER'], filename_target), format='mp3')
+                hasil_full_path = os.path.join(app.config['UPLOAD_FOLDER'], filename_target)
+                sound.export(hasil_full_path, format='mp3')
 
             # bersihkan file initial & wav
             print("finishing...")
             os.remove(initial_full_path)
             os.remove(target_full_path)
-            print("done!")
 
-            # To Do
-            link = ""
+            while not os.path.exists(hasil_full_path):
+                time.sleep(1)
+
+            drive = GoogleDriveService.createService()
+            id = GoogleDriveService.uploadFile(drive, filename_target)
             duration=0
 
-            performance = Performances(user=1, title=filename_target, initial=initial, target=target, duration=duration, gdrive_link=link)
+            performance = Performances(user=1, title=filename_target, initial=initial, target=target, duration=duration, gdrive_link=id)
             db.session.add(performance)
             db.session.commit()
 
+            audio = MP3(hasil_full_path)
+            duration = audio.info.length
+
+            os.remove(hasil_full_path)
+            print("done!")
+
         return response.success({
-            "filename": filename_target,
-            "id": performance.id
+            "title": initial_song.filename[:-4],
+            "id": performance.id,
+            "file_id": id,
+            "duration": duration
         }, "success")
     except Exception as e:
         return response.serverError({}, e)

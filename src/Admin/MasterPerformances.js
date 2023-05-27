@@ -4,7 +4,7 @@ import ActionButton from "../Components/Admin/ActionButton";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle, faTrashAlt, faXmark, faRefresh, faCheck, faTimes, faMinus } from '@fortawesome/free-solid-svg-icons'
-import useFetch from "../Tools/useFetch";
+// import useFetch from "../Tools/useFetch";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -217,7 +217,7 @@ const MasterReport = () => {
                                 <p className="mb-1">Duration :</p>
                                 <p className="mb-1">Initial Instrument :</p>
                                 <p className="mb-1">Target Instrument :</p>
-                                <p className="mb-1">GDrive:</p>
+                                <p className="mb-1">GDrive ID:</p>
                                 <p className="mb-1">Like Status :</p>
                                 <p>Converted At :</p>
                             </div>
