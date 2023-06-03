@@ -4,7 +4,7 @@ import FAQBar from "../Components/User/FAQBar";
 import useFetch from "../Tools/useFetch";
 
 const FAQ = () => {
-    const { data } =  useFetch("http://localhost:5000/faq")
+    const { data } =  useFetch(process.env.REACT_APP_BACKEND_URL+"/api/faq")
     
     return (
         <div className="user-faq flex flex-col flex-grow px-36 py-5">
