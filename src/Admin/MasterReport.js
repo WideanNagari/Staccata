@@ -9,7 +9,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const MasterReport = () => {
-    // const { data } =  useFetch("http://localhost:5000/reports")
+    // const { data } =  useFetch(process.env.REACT_APP_BACKEND_URL+"/api/reports")
     
     const [ dataReport,setDataReport ] = useState(null)
     const [ dataView, setDataView ] = useState(null)
@@ -88,7 +88,7 @@ const MasterReport = () => {
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios
-                    .delete("http://localhost:5000/reports/"+id)
+                    .delete(process.env.REACT_APP_BACKEND_URL+"/api/reports/"+id)
                     .then((e) => {
                         if (e.status !== 200){
                             swal_error(e)
@@ -114,7 +114,7 @@ const MasterReport = () => {
 
     useEffect(() => {
         axios
-        .get("http://localhost:5000/reports")
+        .get(process.env.REACT_APP_BACKEND_URL+"/api/reports")
         .then(res => {
             if (res.status !== 200) swal_error(res);
             else{

@@ -29,7 +29,7 @@ const Login = () => {
         e.preventDefault();
         if(username!=="" && password!==""){
             axios
-            .post("http://localhost:5000/login", {username: username, password: password})
+            .post(process.env.REACT_APP_BACKEND_URL+"/api/login", {username: username, password: password})
             .then((e) => {
                 if (e.status !== 200){
                     swal_error(e)

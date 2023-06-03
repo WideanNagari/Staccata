@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 
 
 const MasterReport = () => {
-    // const { data } =  useFetch("http://localhost:5000/performances")
+    // const { data } =  useFetch(process.env.REACT_APP_BACKEND_URL+"/api/performances")
     
     const [ dataPerform, setDataPerform ] = useState(null)
     const [ dataView, setDataView ] = useState(null)
@@ -106,7 +106,7 @@ const MasterReport = () => {
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios
-                    .delete("http://localhost:5000/performances/"+id)
+                    .delete(process.env.REACT_APP_BACKEND_URL+"/api/performances/"+id)
                     .then((e) => {
                         if (e.status !== 200){
                             swal_error(e)
@@ -132,7 +132,7 @@ const MasterReport = () => {
 
     useEffect(() => {
         axios
-        .get("http://localhost:5000/performances")
+        .get(process.env.REACT_APP_BACKEND_URL+"/api/performances")
         .then(res => {
             if (res.status !== 200) swal_error(res);
             else{

@@ -11,7 +11,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const MasterUser = () => {
-    // let { data } =  useFetch("http://localhost:5000/users")
+    // let { data } =  useFetch(process.env.REACT_APP_BACKEND_URL+"/api/users")
     const [ dataUser, setDataUser ] = useState(null)
     const [ dataView, setDataView ] = useState(null)
     const [ isOpenModal, setOpenModal ] = useState(false)
@@ -84,7 +84,7 @@ const MasterUser = () => {
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios
-                    .delete("http://localhost:5000/users/"+id)
+                    .delete(process.env.REACT_APP_BACKEND_URL+"/api/users/"+id)
                     .then((e) => {
                         if (e.status !== 200){
                             swal_error(e)
@@ -110,7 +110,7 @@ const MasterUser = () => {
 
     useEffect(() => {
         axios
-        .get("http://localhost:5000/users")
+        .get(process.env.REACT_APP_BACKEND_URL+"/api/users")
         .then(res => {
             if (res.status !== 200) swal_error(res);
             else{

@@ -37,7 +37,7 @@ const Reports = () => {
         const nama = firstName+" "+lastName
         if(firstName!=="" && lastName!=="" && title!=="" && description!==""){
             axios
-            .post("http://localhost:5000/reports", {title: title, description: description, reporter: id, reporter_name: nama})
+            .post(process.env.REACT_APP_BACKEND_URL+"/api/reports", {title: title, description: description, reporter: id, reporter_name: nama})
             .then((e) => {
                 if (e.status !== 200){
                     swal_error(e)
@@ -46,7 +46,7 @@ const Reports = () => {
                     // console.log(data)
                     if(id!==1){
                         axios
-                        .put("http://localhost:5000/users/advanced/"+id, {first_name: firstName, last_name: lastName})
+                        .put(process.env.REACT_APP_BACKEND_URL+"/api/users/advanced/"+id, {first_name: firstName, last_name: lastName})
                         .then((e) => {
                             if (e.status !== 200){
                                 swal_error(e)

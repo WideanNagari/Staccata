@@ -65,7 +65,7 @@ const UserDashboard = () => {
         e.preventDefault();
         if(fileValue!==null){
             setConverting(true)
-            axios.post("http://localhost:5000/convert/"+initial, 
+            axios.post(process.env.REACT_APP_BACKEND_URL+"/api/convert/"+initial, 
                 {
                     "song": fileValue
                 }, 
@@ -89,7 +89,7 @@ const UserDashboard = () => {
                 const id = cookies.user_login===undefined ? 1 : cookies.user_login.id
 
                 axios
-                .put("http://localhost:5000/performances/users/"+res.data.data.id, {user: id})
+                .put(process.env.REACT_APP_BACKEND_URL+"/api/performances/users/"+res.data.data.id, {user: id})
                 .then((e) => {
                     if (e.status !== 200){
                         swal_error(e)
@@ -126,7 +126,7 @@ const UserDashboard = () => {
         // const id = cookies.user_login===undefined ? 1 : cookies.user_login.id
         const convert_id = 1
         axios
-        .put("http://localhost:5000/performances/vote/"+convert_id, {vote: 1})
+        .put(process.env.REACT_APP_BACKEND_URL+"/api/performances/vote/"+convert_id, {vote: 1})
         .then((e) => {
             if (e.status !== 200){
                 swal_error(e)
@@ -149,7 +149,7 @@ const UserDashboard = () => {
         // const id = cookies.user_login===undefined ? 1 : cookies.user_login.id 
         const convert_id = 1
         axios
-        .put("http://localhost:5000/performances/vote/"+convert_id, {vote: 0})
+        .put(process.env.REACT_APP_BACKEND_URL+"/api/performances/vote/"+convert_id, {vote: 0})
         .then((e) => {
             if (e.status !== 200){
                 swal_error(e)

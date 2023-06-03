@@ -11,7 +11,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const MasterFAQ = () => {
-    // const { data } =  useFetch("http://localhost:5000/faq")
+    // const { data } =  useFetch(process.env.REACT_APP_BACKEND_URL+"/api/faq")
     
     const [ dataFAQ, setDataFAQ ] = useState(null)
     const [ dataView, setDataView ] = useState(null)
@@ -59,7 +59,7 @@ const MasterFAQ = () => {
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios
-                    .post("http://localhost:5000/faq", {question: question, answer: answer})
+                    .post(process.env.REACT_APP_BACKEND_URL+"/api/faq", {question: question, answer: answer})
                     .then((e) => {
                         if (e.status !== 200){
                             swal_error(e)
@@ -108,7 +108,7 @@ const MasterFAQ = () => {
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios
-                    .put("http://localhost:5000/faq/"+id, {question: question, answer: answer})
+                    .put(process.env.REACT_APP_BACKEND_URL+"/api/faq/"+id, {question: question, answer: answer})
                     .then((e) => {
                         if (e.status !== 200){
                             swal_error(e)
@@ -166,7 +166,7 @@ const MasterFAQ = () => {
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios
-                    .delete("http://localhost:5000/faq/"+id)
+                    .delete(process.env.REACT_APP_BACKEND_URL+"/api/faq/"+id)
                     .then((e) => {
                         if (e.status !== 200){
                             swal_error(e)
@@ -196,7 +196,7 @@ const MasterFAQ = () => {
 
     useEffect(() => {
         axios
-        .get("http://localhost:5000/faq")
+        .get(process.env.REACT_APP_BACKEND_URL+"/api/faq")
         .then(res => {
             if (res.status !== 200) swal_error(res);
             else{

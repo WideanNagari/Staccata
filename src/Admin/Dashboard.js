@@ -32,7 +32,7 @@ const AdminDashboard = () => {
 
     useEffect(() => {    
         axios
-        .get("http://localhost:5000/performances/summary")
+        .get(process.env.REACT_APP_BACKEND_URL+"/api/performances/summary")
         .then(res => {
             if (res.status !== 200) swal_error(res);
             else{
@@ -44,42 +44,42 @@ const AdminDashboard = () => {
         }).catch(err => { swal_error(err) })
     
         axios
-        .get("http://localhost:5000/users/summary")
+        .get(process.env.REACT_APP_BACKEND_URL+"/api/users/summary")
         .then(res => {
             if (res.status !== 200) swal_error(res);
             else setUserCount(res.data.data.user_count)
         }).catch(err => { swal_error(err) })
     
         axios
-        .get("http://localhost:5000/reports/summary")
+        .get(process.env.REACT_APP_BACKEND_URL+"/api/reports/summary")
         .then(res => {
             if (res.status !== 200) swal_error(res);
             else setReportCount(res.data.data.report_count)
         }).catch(err => { swal_error(err) })
 
         axios
-        .get("http://localhost:5000/performances")
+        .get(process.env.REACT_APP_BACKEND_URL+"/api/performances")
         .then(res => {
             if (res.status !== 200) swal_error(res);
             else{ setDataView(res.data.data.reverse()) }
         }).catch(err => { swal_error(err) })
 
         axios
-        .get("http://localhost:5000/reports/top")
+        .get(process.env.REACT_APP_BACKEND_URL+"/api/reports/top")
         .then(res => {
             if (res.status !== 200) swal_error(res);
             else{ setTopReport(res.data.data) }
         }).catch(err => { swal_error(err) })
 
         axios
-        .get("http://localhost:5000/performances/top/Guitar")
+        .get(process.env.REACT_APP_BACKEND_URL+"/api/performances/top/Guitar")
         .then(res => {
             if (res.status !== 200) swal_error(res);
             else{ setTopGuitar(res.data.data) }
         }).catch(err => { swal_error(err) })
 
         axios
-        .get("http://localhost:5000/performances/top/Piano")
+        .get(process.env.REACT_APP_BACKEND_URL+"/api/performances/top/Piano")
         .then(res => {
             if (res.status !== 200) swal_error(res);
             else{ setTopPiano(res.data.data) }

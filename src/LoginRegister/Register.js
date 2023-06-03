@@ -29,7 +29,7 @@ const Register = () => {
         if(username!=="" && email!=="" && password!=="" && confPassword!==""){
             if(password===confPassword){
                 axios
-                .post("http://localhost:5000/users", {username: username, email:email, password: password, level:0})
+                .post(process.env.REACT_APP_BACKEND_URL+"/api/users", {username: username, email:email, password: password, level:0})
                 .then((e) => {
                     if (e.status !== 200){
                         swal_error(e)
