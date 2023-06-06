@@ -1,7 +1,0 @@
-1. simpan data di gdrive
-
-2. hapus accuracy dan loss (done)
-
-3. title masih ga jelas
-
-4. durasi
