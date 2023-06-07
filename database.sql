@@ -29,6 +29,38 @@ CREATE TABLE `alembic_version` (
 insert  into `alembic_version`(`version_num`) values 
 ('d2bef0f1f524');
 
+
+/*Table structure for table `users` */
+
+DROP TABLE IF EXISTS `users`;
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `file_converted_piano` int(11) NOT NULL,
+  `file_converted_guitar` int(11) NOT NULL,
+  `report_sent` int(11) NOT NULL,
+  `level` int(11) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+/*Data for the table `users` */
+
+insert  into `users`(`id`,`username`,`first_name`,`last_name`,`email`,`password`,`file_converted_piano`,`file_converted_guitar`,`report_sent`,`level`,`created_at`,`updated_at`,`deleted_at`) values 
+(1,'guest',NULL,NULL,'guest@ggmail.com','pbkdf2:sha256:260000$XJ3k15hYyPdID4rw$442d8a8b06d662b98cfe51990cda059f6132cefdd5916c46b2fa619df2aee590',0,0,0,0,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
+(2,'joseph60',NULL,NULL,'joseph60@ggmail.com','pbkdf2:sha256:260000$slPmA4pGVMKLl3Ot$5af04db6639e5676e730baa5f88b7d581ad78a2a976baa1c48aa189bbe602d7e',7,9,1,1,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
+(3,'mercersarah',NULL,NULL,'mercersarah@ggmail.com','pbkdf2:sha256:260000$ZUTuserQCg60piyd$7d44ef24adaa585d2b5f2b16cc0f79d73cdfa13f6756acd2dfb5f2ea43c6cc41',2,5,2,0,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
+(4,'andrea57',NULL,NULL,'andrea57@ggmail.com','pbkdf2:sha256:260000$zeYvrqRiqTdwSs43$f1156ad5a6030eba9324a2bb09a86de5ae0d8d352342774be7059b1717790142',7,7,10,0,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
+(5,'tdunlap',NULL,NULL,'tdunlap@ggmail.com','pbkdf2:sha256:260000$EcPA60OIqW4qUbxu$2e9127351e3ce5a34c342186e4da1d01fee241d5f94fd77e1e223836dfbe02a5',2,3,10,0,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
+(6,'elizabeth04',NULL,NULL,'elizabeth04@ggmail.com','pbkdf2:sha256:260000$CSRMZrZC3J24HPHq$9f7320325315d06f66cd5e10fc094ea7e41248f75a024ba3197f775f4ba94def',7,8,0,0,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL);
+
 /*Table structure for table `faq` */
 
 DROP TABLE IF EXISTS `faq`;
@@ -46,11 +78,11 @@ CREATE TABLE `faq` (
 /*Data for the table `faq` */
 
 insert  into `faq`(`id`,`question`,`answer`,`created_at`,`updated_at`,`deleted_at`) values 
-(1,'This laugh court sense kitchen physical paper rock.','Third task toward career two.','2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(2,'Call professional occur what another next will author.','Almost recent service eat population hit.','2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(3,'Special be indicate stay cut must child.','Position medical traditional agent wish dog have.','2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(4,'Third public maintain sport capital easy her.','Group board why concern thought health special firm.','2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(5,'Through candidate truth measure again.','Money discover carry economic present source move.','2023-06-03 13:40:59','2023-06-03 13:40:59',NULL);
+(1,'Berapa durasi maksimal dari lagu yang dapat dikonversi?','Untuk saat ini, belum ada batasan dari berapa durasi terlama lagu yang dapat dikonversi. Namun perlu diketahui bahwa semakin lama durasi dari lagu, maka semakin lama pula waktu yang dibutuhkan untuk proses konversi.','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
+(2,'File jenis apa sajakah yang dapat dikonversi?','Jenis file yang dapat dikonversi adalah file berekstensi .mp3. File jenis lain tidak dapat diterima oleh sistem.','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
+(3,'Apa maksud dari drop-down instrumen yang berada disebelah kiri tombol convert?','Drop-down berguna untuk memilih instrumen apa yang ada didalam file lagu yang diupload. Pengguna perlu memilih instrumen yang tepat agar mesin dapat melakukan konversi dengan benar.','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
+(4,'Apa saja jenis pesan yang boleh dikirimkan pada bagian Reports?','Pengguna bebas mengirimkan pesan dalam bentuk kritikan, saran, maupun pesan lain seperti bug yang ditemukan, tampilan yang kurang menyenangkan, dll. Pesan yang dikirimkan akan berguna untuk pengembangan website kedepannya.','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
+(5,'Bagaimana cara membatalkan like/dislike?','Untuk saat ini, fitur like/dislike hanya dapat dilakukan sekali dan tidak dapat dibatalkan.','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL);
 
 /*Table structure for table `performances` */
 
@@ -103,42 +135,11 @@ CREATE TABLE `reports` (
 /*Data for the table `reports` */
 
 insert  into `reports`(`id`,`title`,`description`,`reporter`,`reporter_name`,`created_at`,`updated_at`,`deleted_at`) values 
-(1,'Seem side operation then.','Bank situation region process friend.',4,'andrea57','2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(2,'Including tough successful computer pattern.','Former college loss hot.',1,'guest','2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(3,'Thus believe source south care policy.','Each gun century scientist.',3,'mercersarah','2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(4,'Light need former down ten especially music.','Ago understand size rather street since.',4,'andrea57','2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(5,'Future raise everything tonight remain federal.','Once describe would purpose.',4,'andrea57','2023-06-03 13:40:59','2023-06-03 13:40:59',NULL);
-
-/*Table structure for table `users` */
-
-DROP TABLE IF EXISTS `users`;
-
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `first_name` varchar(255) DEFAULT NULL,
-  `last_name` varchar(255) DEFAULT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `file_converted_piano` int(11) NOT NULL,
-  `file_converted_guitar` int(11) NOT NULL,
-  `report_sent` int(11) NOT NULL,
-  `level` int(11) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `deleted_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
-
-/*Data for the table `users` */
-
-insert  into `users`(`id`,`username`,`first_name`,`last_name`,`email`,`password`,`file_converted_piano`,`file_converted_guitar`,`report_sent`,`level`,`created_at`,`updated_at`,`deleted_at`) values 
-(1,'guest',NULL,NULL,'guest@ggmail.com','pbkdf2:sha256:260000$XJ3k15hYyPdID4rw$442d8a8b06d662b98cfe51990cda059f6132cefdd5916c46b2fa619df2aee590',0,0,0,0,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(2,'joseph60',NULL,NULL,'joseph60@ggmail.com','pbkdf2:sha256:260000$slPmA4pGVMKLl3Ot$5af04db6639e5676e730baa5f88b7d581ad78a2a976baa1c48aa189bbe602d7e',7,9,1,1,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(3,'mercersarah',NULL,NULL,'mercersarah@ggmail.com','pbkdf2:sha256:260000$ZUTuserQCg60piyd$7d44ef24adaa585d2b5f2b16cc0f79d73cdfa13f6756acd2dfb5f2ea43c6cc41',2,5,2,0,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(4,'andrea57',NULL,NULL,'andrea57@ggmail.com','pbkdf2:sha256:260000$zeYvrqRiqTdwSs43$f1156ad5a6030eba9324a2bb09a86de5ae0d8d352342774be7059b1717790142',7,7,10,0,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(5,'tdunlap',NULL,NULL,'tdunlap@ggmail.com','pbkdf2:sha256:260000$EcPA60OIqW4qUbxu$2e9127351e3ce5a34c342186e4da1d01fee241d5f94fd77e1e223836dfbe02a5',2,3,10,0,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL),
-(6,'elizabeth04',NULL,NULL,'elizabeth04@ggmail.com','pbkdf2:sha256:260000$CSRMZrZC3J24HPHq$9f7320325315d06f66cd5e10fc094ea7e41248f75a024ba3197f775f4ba94def',7,8,0,0,'2023-06-03 13:40:59','2023-06-03 13:40:59',NULL);
+(1,'Prepare large establish late pretty class.','Policy add sign TV surface center.',1,'guest','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
+(2,'Masalah pada pengunduhan lagu','saya baru saja melakukan konversi pada lagu yang saya kirimkan, namun saya tidak dapat mengunduh lagu tersebut. Apa yang terjadi? apakah terdapat bug pada fitur tersebut?',4,'Michael Grant','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
+(3,'Meeting interesting election know put.','Budget daughter although talk say bill.',3,'aflores','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
+(4,'If history right north movement run.','Out effect expert people room involve.',5,'susancarney','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL),
+(5,'Today single protect only language.','Agree simply blood college.',2,'melissa06','2023-03-20 00:32:46','2023-03-20 00:32:46',NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
