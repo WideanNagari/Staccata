@@ -14,12 +14,11 @@ const fileTypes = ["MP3"];
 
 const UserDashboard = () => {
     const [cookies, setCookie] = useCookies(['user_login']);
-    const [title, setTitle] = useState('...');
+    const [title, setTitle] = useState('-');
     const [initial, setInitial] = useState('Piano');
     const [target, setTarget] = useState('Guitar');
+    const [inputType, setInputType] = useState('Mel-Spectrogram');
     const [duration, setDuration] = useState('0 minute 0 seconds');
-    // const [accuracy, setAccuracy] = useState('0');
-    // const [loss, setLoss] = useState('0');
     const [converting, setConverting] = useState(false);
     const [convertDone, setConvertDone] = useState(false);
     const [voted, setVoted] = useState(false);
@@ -65,7 +64,7 @@ const UserDashboard = () => {
         e.preventDefault();
         if(fileValue!==null){
             setConverting(true)
-            axios.post(process.env.REACT_APP_BACKEND_URL+"/api/convert/"+initial, 
+            axios.post(process.env.REACT_APP_BACKEND_URL+"/api/convert/"+initial+"/"+inputType, 
                 {
                     "song": fileValue
                 }, 
@@ -122,8 +121,11 @@ const UserDashboard = () => {
         setTarget(t)
     }
 
+    const inputTypeChange = (value) => {
+        setInputType(value)
+    }
+
     const like = () => {
-        // const id = cookies.user_login===undefined ? 1 : cookies.user_login.id
         const convert_id = 1
         axios
         .put(process.env.REACT_APP_BACKEND_URL+"/api/performances/vote/"+convert_id, {vote: 1})
@@ -146,7 +148,6 @@ const UserDashboard = () => {
     }
 
     const dislike = () => {
-        // const id = cookies.user_login===undefined ? 1 : cookies.user_login.id 
         const convert_id = 1
         axios
         .put(process.env.REACT_APP_BACKEND_URL+"/api/performances/vote/"+convert_id, {vote: 0})
@@ -176,18 +177,6 @@ const UserDashboard = () => {
                         <div className="w-full h-full border-2 border-primary-900 border-dashed rounded-lg
                                         flex items-center justify-center">
                             <div className="w-full h-full flex items-center justify-center text-2xl">
-                                {/* {filename==="" && <div className="text-center">
-                                    <p className="text-white mb-2">Drop MP3 File Here!</p>
-                                    <p className="text-white mb-3">or</p>
-                                    <LightButton text="Choose File" icon={faMagnifyingGlass} addedClass="py-2 px-4" color="#013A63" handleClick={fileClick} />
-                                    <input type='file' 
-                                            id='file' 
-                                            accept="audio/mp3" 
-                                            ref={inputFile}
-                                            className="hidden"
-                                            value={fileValue}
-                                            onChange={(e) => fileChange(e.target.value)}/>
-                                </div>} */}
                                 <FileUploader handleChange={fileChange} name="file" types={fileTypes}
                                     children={fileValue===null?inputElement:inputedElement}/>
                             </div>
@@ -195,16 +184,25 @@ const UserDashboard = () => {
                     </div>
                 </div>
                 <div className="w-3/5 h-full px-10 py-5">
-                    <p className="font-bold text-xl text-white mb-3">Choose the type of current instrument :</p>
-                    <div className="flex gap-2 mb-5">
+                    <p className="font-bold text-xl text-white mb-1">Choose the type of current instrument :</p>
+                    <div className="flex gap-2 mb-2">
                         <select className="text-primary text-lg bg-primary-900 rounded-lg w-3/5 px-3 py-2 outline-none"
                             onChange={(e) => initialChange(e.target.value)}>
                             <option value="Piano">Piano</option>
                             <option value="Guitar">Guitar</option>
                         </select>
-                        <LightButton text="Convert" icon={faPlay} addedClass="py-2 px-4" color="#013A63" handleClick={startConvert}/>
                     </div>
 
+                    <p className="font-bold text-xl text-white mb-1">Choose the model input type :</p>
+                    <div className="flex gap-2 mb-5">
+                        <select className="text-primary text-lg bg-primary-900 rounded-lg w-3/5 px-3 py-2 outline-none"
+                            onChange={(e) => inputTypeChange(e.target.value)}>
+                            <option value="Mel-Spectrogram">Mel-Spectrogram</option>
+                            <option value="MFCC">MFCC</option>
+                        </select>
+                    </div>
+
+                    <LightButton text="Convert" icon={faPlay} addedClass="py-2 px-4 mb-3" color="#013A63" handleClick={startConvert}/>
                     <div className="flex gap-2 font-bold text-xl text-white mb-3">
                         <p>Progress :</p>
                         {converting && 
@@ -217,15 +215,6 @@ const UserDashboard = () => {
                                 <span className="sr-only">Loading...</span>
                             </div>}
                     </div>
-                    {/* <div className="flex gap-5 items-center">
-                        <div className="w-2/3 h-10 bg-primary-900 rounded-lg flex items-center px-5">
-                            <div className="w-full h-4 border-2 border-primary-100 rounded-full">
-                                <div className="h-full w-1/2 bg-primary-100 rounded-full"></div>
-                            </div>
-                        </div>
-                        <p className="font-bold text-xl text-white">50%</p>
-                    </div> */}
-
                 </div>
             </div>
             <div className="bg-primary-400 w-full h-1/2 rounded-lg overflow-hidden flex shadow-black shadow-xl">
@@ -278,17 +267,15 @@ const UserDashboard = () => {
                             <p className="mb-1">Title :</p>
                             <p className="mb-1">Initial Instrument :</p>
                             <p className="mb-1">Target Instrument :</p>
+                            <p className="mb-1">Input Type :</p>
                             <p className="mb-1">Duration :</p>
-                            {/* <p className="mb-1">Accuracy :</p> */}
-                            {/* <p>Loss :</p> */}
                         </div>
                         <div className='w-3/5'>
                             <p className='truncate mb-1'>{title}</p>
                             <p className="mb-1">{initial}</p>
                             <p className="mb-1">{target}</p>
+                            <p className="mb-1">{inputType}</p>
                             <p className="mb-1">{duration}</p>
-                            {/* <p className="mb-1">{accuracy}%</p> */}
-                            {/* <p>{loss}</p> */}
                         </div>
                     </div>
                     <div className="flex justify-center">
