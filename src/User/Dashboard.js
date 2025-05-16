@@ -23,7 +23,7 @@ const UserDashboard = () => {
     const [convertDone, setConvertDone] = useState(false);
     const [voted, setVoted] = useState(false);
     const [filename, setFilename] = useState("");
-    const [convertedFileID, setConvertedFileID] = useState("");
+    const [convertedFilePath, setConvertedFilePath] = useState("");
     const [fileValue, setFileValue] = useState(null);
 
     const inputElement = (
@@ -80,8 +80,8 @@ const UserDashboard = () => {
                 let detik = Math.floor(durasi%60)
                 setDuration(menit+" minute "+detik+" seconds")
 
-                const current_fileid=res.data.data.file_id
-                setConvertedFileID(current_fileid)
+                const current_filepath=res.data.data.file_path
+                setConvertedFilePath(current_filepath)
                 setConvertDone(true)
                 setConverting(false)
                 
@@ -227,7 +227,7 @@ const UserDashboard = () => {
                                     <audio
                                         controls
                                         className="kontrol-audio w-full">
-                                        <source src={"https://drive.google.com/uc?export=download&id="+convertedFileID} type="audio/mp3" />
+                                        <source src={'/Song/'+convertedFilePath} type="audio/mp3" />
                                     </audio>
                                     {/* <p className="text-lg text-primary-100">1:03</p>
                                     <div className="w-full h-4 border-2 border-primary-100 rounded-full">
@@ -244,7 +244,7 @@ const UserDashboard = () => {
                             </div>
                         </div>
                         <div className="w-full flex justify-center">
-                            <a href={"https://drive.google.com/uc?export=download&id="+convertedFileID} download>
+                            <a href={'/Song/'+convertedFilePath} download>
                                 <LightButton text="Download" icon={faDownload} addedClass="py-2 px-10" color="#013A63" handleClick={startDownload}/>
                             </a>
                         </div>
